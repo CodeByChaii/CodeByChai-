@@ -1,20 +1,31 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "motion/react";
 import Link from "next/link";
+import "./x-auto-poster.css";
+
+type Post = {
+  id: number;
+  content: string;
+  category: string;
+  charCount: number;
+  createdAt: string;
+  type?: string;
+  stat?: { past: string; now: string; change: string };
+};
 
 const CATEGORIES = [
-  { id: "crypto", name: "Crypto" },
-  { id: "vibecoding", name: "Vibe Coding" },
-  { id: "both", name: "Both" },
+  { id: "crypto", name: "Crypto", icon: "💰" },
+  { id: "vibecoding", name: "Vibe Coding", icon: "💻" },
+  { id: "both", name: "Both", icon: "🔥" },
 ];
 
 export default function XAutoPosterPage() {
   const [category, setCategory] = useState("crypto");
   const [topic, setTopic] = useState("");
-  const [generatedPost, setGeneratedPost] = useState<string | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [filter, setFilter] = useState("all");
 
   const handleGenerate = async () => {
     setIsLoading(true);
@@ -27,191 +38,237 @@ export default function XAutoPosterPage() {
 
       const data = await response.json();
       if (data.success) {
-        setGeneratedPost(data.post.content);
+        setPosts([data.post, ...posts]);
+        showToast("Post generated! 🎯", "success");
       } else {
-        alert("Failed to generate post");
+        showToast(data.error || "Generation failed", "error");
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Error generating post");
+      showToast("Network error", "error");
     } finally {
       setIsLoading(false);
     }
   };
 
+  const deletePost = (id: number) => {
+    if (!confirm("Delete this post?")) return;
+    setPosts(posts.filter((p) => p.id !== id));
+    showToast("Post deleted", "success");
+  };
+
+  const copyPost = (content: string) => {
+    navigator.clipboard.writeText(content);
+    showToast("Copied to clipboard! 📋", "success");
+  };
+
+  const showToast = (message: string, type: string) => {
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  };
+
+  const filteredPosts = posts.filter((p) => {
+    if (filter === "all") return true;
+    return p.category === filter;
+  });
+
+  const stats = {
+    total: posts.length,
+    crypto: posts.filter((p) => p.category === "crypto").length,
+    vibe: posts.filter((p) => p.category === "vibecoding").length,
+  };
+
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "var(--background)", color: "var(--foreground)" }}>
+    <div className="x-auto-poster-page">
       {/* Header */}
-      <header className="border-b" style={{ borderColor: "var(--border)" }}>
-        <div className="max-w-4xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">X Auto Poster</h1>
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold border transition"
-              style={{ borderColor: "var(--border)", color: "var(--muted)" }}
-            >
-              ← Back to Portfolio
-            </Link>
+      <header className="dashboard-header">
+        <div className="container">
+          <div className="logo">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+            <h1>
+              <span>X Auto-Poster</span> Dashboard
+            </h1>
+          </div>
+
+          <div className="stats">
+            <div className="stat">
+              <div className="stat-value">{stats.total}</div>
+              <div className="stat-label">Total</div>
+            </div>
+            <div className="stat">
+              <div className="stat-value">{stats.crypto}</div>
+              <div className="stat-label">Crypto</div>
+            </div>
+            <div className="stat">
+              <div className="stat-value">{stats.vibe}</div>
+              <div className="stat-label">Vibe</div>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 py-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="space-y-8"
-        >
-          {/* Description */}
-          <div className="rounded-xl border p-6" style={{ borderColor: "var(--border)", backgroundColor: "var(--card)" }}>
-            <h2 className="text-xl font-semibold mb-3">Generate AI-Powered Tweets</h2>
-            <p style={{ color: "var(--muted)" }}>
-              Automatically generate engaging crypto and coding content for X (Twitter) using AI. Select a category and
-              optionally provide a topic to get started.
-            </p>
-          </div>
+      <div className="container">
+        <div className="main-layout">
+          {/* Sidebar - Controls */}
+          <aside className="sidebar">
+            <div className="card">
+              <h3 className="card-title">⚡ Quick Generate</h3>
 
-          {/* Generator Form */}
-          <div className="rounded-xl border p-6 space-y-6" style={{ borderColor: "var(--border)", backgroundColor: "var(--card)" }}>
-            {/* Category Selection */}
-            <div>
-              <label className="block text-sm font-semibold mb-3">Category</label>
-              <div className="flex gap-3">
+              {/* Category Selection */}
+              <div className="category-btns">
                 {CATEGORIES.map((cat) => (
                   <button
                     key={cat.id}
                     type="button"
                     onClick={() => setCategory(cat.id)}
-                    className="rounded-full px-4 py-2 text-sm font-semibold border transition"
-                    style={{
-                      borderColor: category === cat.id ? "var(--accent)" : "var(--border)",
-                      backgroundColor: category === cat.id ? "var(--accent-soft)" : "var(--surface)",
-                      color: category === cat.id ? "var(--accent)" : "var(--foreground)",
-                    }}
+                    className={`btn ${category === cat.id ? "btn-primary" : "btn-secondary"}`}
                   >
-                    {cat.name}
+                    {cat.icon} {cat.name}
                   </button>
                 ))}
               </div>
-            </div>
 
-            {/* Topic Input */}
-            <div>
-              <label className="block text-sm font-semibold mb-2">Topic (Optional)</label>
-              <input
-                type="text"
-                value={topic}
-                onChange={(e) => setTopic(e.target.value)}
-                placeholder="e.g., Bitcoin halving, React hooks, etc."
-                className="w-full rounded-lg border px-4 py-2"
-                style={{
-                  borderColor: "var(--border)",
-                  backgroundColor: "var(--surface)",
-                  color: "var(--foreground)",
-                }}
-              />
-            </div>
+              {/* Topic Input */}
+              <label>
+                Topic (optional)
+                <input
+                  type="text"
+                  value={topic}
+                  onChange={(e) => setTopic(e.target.value)}
+                  placeholder="e.g., Bitcoin halving, React hooks..."
+                  className="topic-input"
+                />
+              </label>
 
-            {/* Generate Button */}
-            <button
-              type="button"
-              onClick={handleGenerate}
-              disabled={isLoading}
-              className="w-full rounded-full px-6 py-3 text-sm font-semibold transition"
-              style={{
-                background: "linear-gradient(120deg, var(--accent) 0%, var(--accent-strong) 60%)",
-                color: "var(--accent-foreground)",
-                opacity: isLoading ? 0.6 : 1,
-                cursor: isLoading ? "not-allowed" : "pointer",
-              }}
-            >
-              {isLoading ? "Generating..." : "Generate Post"}
-            </button>
-          </div>
-
-          {/* Generated Post */}
-          {generatedPost && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="rounded-xl border p-6 space-y-4"
-              style={{ borderColor: "var(--accent)", backgroundColor: "var(--card)" }}
-            >
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold">Generated Post</h3>
-                <span
-                  className="rounded-full px-3 py-1 text-xs font-semibold"
-                  style={{ backgroundColor: "var(--accent-soft)", color: "var(--accent)" }}
-                >
-                  {generatedPost.length} characters
-                </span>
-              </div>
-              <div
-                className="rounded-lg p-4"
-                style={{ backgroundColor: "var(--surface)", color: "var(--foreground)" }}
+              {/* Generate Button */}
+              <button
+                type="button"
+                onClick={handleGenerate}
+                disabled={isLoading}
+                className="btn btn-generate"
               >
-                <p className="whitespace-pre-wrap">{generatedPost}</p>
-              </div>
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => navigator.clipboard.writeText(generatedPost)}
-                  className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition"
-                  style={{
-                    borderColor: "var(--border)",
-                    backgroundColor: "var(--surface)",
-                    color: "var(--foreground)",
-                  }}
-                >
-                  📋 Copy to Clipboard
-                </button>
-                <a
-                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(generatedPost)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition"
-                  style={{
-                    background: "linear-gradient(120deg, var(--accent) 0%, var(--accent-strong) 60%)",
-                    color: "var(--accent-foreground)",
-                  }}
-                >
-                  🐦 Post to X
-                </a>
-              </div>
-            </motion.div>
-          )}
+                {isLoading ? "⏳ Generating..." : "✨ Generate Post"}
+              </button>
+            </div>
 
-          {/* Features List */}
-          <div className="rounded-xl border p-6" style={{ borderColor: "var(--border)", backgroundColor: "var(--card)" }}>
-            <h3 className="text-lg font-semibold mb-4">Coming Soon</h3>
-            <ul className="space-y-2 text-sm" style={{ color: "var(--muted)" }}>
-              <li className="flex items-start gap-2">
-                <span style={{ color: "var(--accent)" }}>✓</span>
-                <span>AI-powered content generation using OpenAI</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span style={{ color: "var(--accent)" }}>✓</span>
-                <span>Automatic posting with scheduling</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span style={{ color: "var(--accent)" }}>✓</span>
-                <span>Thread generation support</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span style={{ color: "var(--accent)" }}>✓</span>
-                <span>Crypto news summarization</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span style={{ color: "var(--accent)" }}>✓</span>
-                <span>Duplicate prevention and fact-checking</span>
-              </li>
-            </ul>
-          </div>
-        </motion.div>
-      </main>
+            <div className="card">
+              <h3 className="card-title">🎯 Coming Soon</h3>
+              <div className="coming-soon-list">
+                <div>🧵 Thread generation</div>
+                <div>📰 News summarization</div>
+                <div>📊 Stats comparisons</div>
+                <div>📅 Auto scheduling</div>
+                <div>🔄 Duplicate prevention</div>
+              </div>
+            </div>
+
+            <div className="card">
+              <Link href="/" className="btn btn-secondary">
+                ← Back to Portfolio
+              </Link>
+            </div>
+          </aside>
+
+          {/* Main Content - Generated Posts */}
+          <main className="main-content">
+            <div className="filter-tabs">
+              <button
+                type="button"
+                onClick={() => setFilter("all")}
+                className={`filter-tab ${filter === "all" ? "active" : ""}`}
+              >
+                All ({stats.total})
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilter("crypto")}
+                className={`filter-tab ${filter === "crypto" ? "active" : ""}`}
+              >
+                💰 Crypto ({stats.crypto})
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilter("vibecoding")}
+                className={`filter-tab ${filter === "vibecoding" ? "active" : ""}`}
+              >
+                💻 Vibe ({stats.vibe})
+              </button>
+            </div>
+
+            <div className="posts-grid">
+              {filteredPosts.length === 0 ? (
+                <div className="empty-state">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
+                  <h3>No posts yet</h3>
+                  <p>Click "Generate Post" to create your first tweet!</p>
+                </div>
+              ) : (
+                filteredPosts.map((post) => {
+                  const charClass =
+                    post.charCount > 280 ? "danger" : post.charCount > 250 ? "warning" : "";
+                  const date = new Date(post.createdAt).toLocaleString();
+
+                  return (
+                    <div key={post.id} className="post-card">
+                      <div className="post-header">
+                        <div className="post-meta">
+                          <span className={`post-category ${post.category}`}>{post.category}</span>
+                          <span className="post-type">
+                            {post.stat ? "📊 Stats" : "✨ Original"}
+                          </span>
+                        </div>
+                        <div className="post-actions">
+                          <button
+                            type="button"
+                            onClick={() => copyPost(post.content)}
+                            className="post-action"
+                            title="Copy"
+                          >
+                            📋
+                          </button>
+                          <a
+                            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.content)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="post-action"
+                            title="Post to X"
+                          >
+                            🐦
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => deletePost(post.id)}
+                            className="post-action delete"
+                            title="Delete"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="post-content">{post.content}</div>
+
+                      <div className="post-footer">
+                        <span>{date}</span>
+                        <span className={`char-count ${charClass}`}>
+                          {post.charCount}/280 chars
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </main>
+        </div>
+      </div>
     </div>
   );
 }

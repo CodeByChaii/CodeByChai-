@@ -255,8 +255,6 @@ function ProjectCard({ p }: { p: Project }) {
             {p.webUrl && (
               <Link
                 href={p.webUrl}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition"
                 style={{
                   background: "linear-gradient(120deg, var(--accent) 0%, var(--accent-strong) 60%)",
@@ -270,8 +268,6 @@ function ProjectCard({ p }: { p: Project }) {
             {p.downloadUrl && (
               <Link
                 href={p.downloadUrl}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition"
                 style={{
                   borderColor: "var(--border)",

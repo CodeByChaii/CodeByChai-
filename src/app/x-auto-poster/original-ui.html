@@ -1,0 +1,2310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>X Auto-Poster Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #09090b;
+      --bg-secondary: rgba(24, 24, 27, 0.8);
+      --bg-card: rgba(24, 24, 27, 0.6);
+      --bg-hover: rgba(39, 39, 42, 0.8);
+      --border-color: rgba(63, 63, 70, 0.5);
+      --border-glow: rgba(59, 130, 246, 0.5);
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --accent-blue: #3b82f6;
+      --accent-purple: #a855f7;
+      --accent-green: #22c55e;
+      --accent-orange: #f59e0b;
+      --accent-pink: #ec4899;
+      --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #a855f7 100%);
+      --gradient-gold: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+      --gradient-vibe: linear-gradient(135deg, #a855f7 0%, #22c55e 100%);
+      --shadow-glow: 0 0 40px rgba(59, 130, 246, 0.15);
+      --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(168, 85, 247, 0.1), transparent);
+      color: var(--text-primary);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      background: var(--bg-secondary);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo svg {
+      width: 36px;
+      height: 36px;
+      fill: var(--text-primary);
+      filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.4));
+    }
+
+    .logo h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Stats */
+    .stats {
+      display: flex;
+      gap: 32px;
+    }
+
+    .stat {
+      text-align: center;
+      padding: 8px 16px;
+      background: rgba(59, 130, 246, 0.05);
+      border-radius: 12px;
+      border: 1px solid rgba(59, 130, 246, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .stat:hover {
+      background: rgba(59, 130, 246, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+
+    /* Main Layout */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 24px;
+    }
+
+    /* Sidebar - Controls */
+    .sidebar {
+      position: sticky;
+      top: 24px;
+      height: fit-content;
+    }
+
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-card);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-primary);
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .btn:hover::before {
+      opacity: 1;
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--accent-blue);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: rgba(59, 130, 246, 0.1);
+      border-color: var(--accent-blue);
+    }
+
+    .btn-crypto {
+      background: var(--gradient-gold);
+      color: #000;
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-vibe {
+      background: var(--gradient-vibe);
+      color: #000;
+      box-shadow: 0 4px 16px rgba(168, 85, 247, 0.3);
+    }
+
+    .btn-news {
+      background: linear-gradient(135deg, var(--accent-pink) 0%, #f43f5e 100%);
+      color: white;
+      box-shadow: 0 4px 16px rgba(236, 72, 153, 0.3);
+    }
+
+    .btn-batch {
+      background: linear-gradient(135deg, #06b6d4 0%, var(--accent-green) 100%);
+      color: #000;
+      box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+    }
+
+    .btn-stats {
+      background: linear-gradient(135deg, #8b5cf6 0%, var(--accent-pink) 100%);
+      color: white;
+      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+    }
+
+    /* Category Buttons */
+    .category-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    /* Select/Input */
+    select, input, textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(39, 39, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 14px;
+      margin-bottom: 12px;
+      transition: all 0.3s ease;
+    }
+
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+      background: rgba(39, 39, 42, 0.8);
+    }
+
+    select:hover, input:hover, textarea:hover {
+      border-color: rgba(113, 113, 122, 0.8);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    /* Posts Grid */
+    .posts-section {
+      flex: 1;
+    }
+
+    .posts-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 16px 20px;
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+    }
+
+    .posts-header h2 {
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 6px;
+      background: rgba(39, 39, 42, 0.6);
+      padding: 4px;
+      border-radius: 10px;
+    }
+
+    .filter-tab {
+      padding: 8px 16px;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-tab:hover {
+      color: var(--text-secondary);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .filter-tab.active {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Post Cards */
+    .posts-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .post-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 20px;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-card);
+    }
+
+    .post-card:hover {
+      border-color: rgba(59, 130, 246, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 32px rgba(59, 130, 246, 0.1);
+    }
+
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .post-category {
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .post-category.crypto {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 191, 36, 0.1));
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .post-category.vibecoding {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(34, 197, 94, 0.1));
+      color: #a855f7;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+
+    .post-category.news {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(244, 63, 94, 0.1));
+      color: #f472b6;
+      border: 1px solid rgba(236, 72, 153, 0.3);
+    }
+
+    .post-category.stats {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(168, 85, 247, 0.1));
+      color: #c4b5fd;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .post-type {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .post-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .post-action {
+      background: rgba(39, 39, 42, 0.6);
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+      font-size: 14px;
+    }
+
+    .post-action:hover {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: rgba(59, 130, 246, 0.3);
+      color: var(--accent-blue);
+      transform: scale(1.05);
+    }
+
+    .post-action.delete:hover {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+    }
+
+    .post-content {
+      font-size: 15px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      margin-bottom: 14px;
+      color: var(--text-primary);
+    }
+
+    .post-content .hook {
+      color: var(--accent-blue);
+      font-weight: 600;
+    }
+
+    /* Stat Badge */
+    .post-stat {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(168, 85, 247, 0.08));
+      border: 1px solid rgba(168, 85, 247, 0.25);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      font-size: 12px;
+      backdrop-filter: blur(10px);
+    }
+
+    .post-stat-label {
+      color: var(--accent-purple);
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .post-stat-content {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .post-stat-item {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .post-stat-item span {
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* Image Prompt */
+    .post-image-prompt {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.05));
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-top: 14px;
+      font-size: 12px;
+      backdrop-filter: blur(10px);
+    }
+
+    .post-image-prompt-label {
+      color: var(--accent-blue);
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .post-image-prompt-text {
+      color: var(--text-secondary);
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    .copy-prompt-btn {
+      background: transparent;
+      border: 1px solid var(--accent-blue);
+      color: var(--accent-blue);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-left: auto;
+      transition: all 0.2s ease;
+    }
+
+    .copy-prompt-btn:hover {
+      background: var(--accent-blue);
+      color: white;
+    }
+
+    .post-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-color);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .char-count {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+
+    .char-count.warning {
+      color: var(--accent-orange);
+    }
+
+    .char-count.danger {
+      color: #ef4444;
+    }
+
+    /* Thread Preview */
+    .thread-tweets {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .thread-tweet {
+      background: rgba(39, 39, 42, 0.6);
+      padding: 14px 16px;
+      border-radius: 12px;
+      border-left: 3px solid var(--accent-blue);
+    }
+
+    .thread-tweet-num {
+      font-size: 11px;
+      color: var(--accent-blue);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    /* Loading State */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px;
+      color: var(--text-muted);
+    }
+
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid var(--border-color);
+      border-top-color: var(--accent-blue);
+      border-radius: 50%;
+      animation: spin 0.8s ease-in-out infinite;
+      margin-right: 12px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-muted);
+      background: var(--bg-card);
+      border-radius: 20px;
+      border: 1px dashed var(--border-color);
+    }
+
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--bg-secondary);
+      backdrop-filter: blur(20px);
+      color: white;
+      padding: 16px 24px;
+      border-radius: 12px;
+      font-weight: 500;
+      animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .toast.error {
+      border-color: rgba(239, 68, 68, 0.5);
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), var(--bg-secondary));
+    }
+
+    .toast.success {
+      border-color: rgba(34, 197, 94, 0.5);
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), var(--bg-secondary));
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100px) scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* ============== CONTENT SCORE BADGE ============== */
+    .content-score {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .content-score.grade-A {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.1));
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .content-score.grade-B {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(96, 165, 250, 0.1));
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .content-score.grade-C {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 191, 36, 0.1));
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .content-score.grade-D {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(248, 113, 113, 0.1));
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* Media recommendation badge */
+    .media-rec-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(139, 92, 246, 0.1));
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 500;
+      color: #c4b5fd;
+    }
+
+    /* Strategy info box */
+    .post-strategy {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(168, 85, 247, 0.04));
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 14px;
+      font-size: 12px;
+      backdrop-filter: blur(10px);
+    }
+
+    .post-strategy-title {
+      color: var(--accent-blue);
+      font-weight: 600;
+      margin-bottom: 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .post-strategy-item {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      padding: 4px 0;
+    }
+
+    .post-strategy-item span:last-child {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* Score feedback */
+    .score-feedback {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(63, 63, 70, 0.5);
+    }
+
+    .score-feedback-item {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+      padding-left: 14px;
+      position: relative;
+    }
+
+    .score-feedback-item::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent-blue);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(39, 39, 42, 0.3);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(113, 113, 122, 0.5);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(113, 113, 122, 0.7);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+      }
+
+      .stats {
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      header {
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px;
+      }
+
+      .container {
+        padding: 16px;
+      }
+
+      .filter-tabs {
+        flex-wrap: wrap;
+      }
+    }
+
+    /* ============== NEW: TABS FOR SIDEBAR ============== */
+    .tab-container {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      background: rgba(39, 39, 42, 0.6);
+      border-radius: 12px;
+      padding: 4px;
+      border: 1px solid var(--border-color);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px 8px;
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tab-btn .tab-icon {
+      font-size: 16px;
+    }
+
+    .tab-btn.active {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .tab-btn:hover:not(.active) {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--text-secondary);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============== TRENDING SECTION ============== */
+    .trending-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .trending-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: rgba(39, 39, 42, 0.5);
+      border: 1px solid transparent;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .trending-item:hover {
+      background: rgba(59, 130, 246, 0.1);
+      border-color: rgba(59, 130, 246, 0.2);
+      transform: translateX(4px);
+    }
+
+    .trending-topic {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .trending-heat {
+      font-size: 18px;
+      filter: drop-shadow(0 0 4px rgba(255, 100, 0, 0.5));
+    }
+
+    .trending-name {
+      font-weight: 600;
+      text-transform: capitalize;
+      color: var(--text-primary);
+    }
+
+    .trending-count {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .use-topic-btn {
+      padding: 6px 12px;
+      background: var(--gradient-primary);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      opacity: 0;
+      transition: all 0.2s ease;
+      transform: scale(0.9);
+    }
+
+    .trending-item:hover .use-topic-btn {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* ============== CHECKLIST SECTION ============== */
+    .checklist-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .checklist-progress {
+      font-size: 12px;
+      color: var(--accent-green);
+      font-weight: 600;
+      background: rgba(34, 197, 94, 0.1);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px;
+      background: rgba(39, 39, 42, 0.5);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+    }
+
+    .checklist-item:hover {
+      background: rgba(59, 130, 246, 0.08);
+      border-color: rgba(59, 130, 246, 0.15);
+    }
+
+    .checklist-item.completed {
+      opacity: 0.5;
+    }
+
+    .checklist-checkbox {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--text-muted);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+    }
+
+    .checklist-checkbox:hover {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .checklist-item.completed .checklist-checkbox {
+      background: var(--accent-green);
+      border-color: var(--accent-green);
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+    }
+
+    .checklist-checkbox::after {
+      content: '✓';
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.2s ease;
+    }
+
+    .checklist-item.completed .checklist-checkbox::after {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .checklist-info {
+      flex: 1;
+    }
+
+    .checklist-time {
+      font-size: 13px;
+      color: var(--accent-blue);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .checklist-type {
+      font-size: 10px;
+      color: var(--accent-purple);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .checklist-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    /* ============== MEDIA SECTION ============== */
+    .media-section {
+      margin-bottom: 20px;
+    }
+
+    .media-section h4 {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .media-prompt-box {
+      background: rgba(39, 39, 42, 0.5);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+
+    .media-prompt-box:hover {
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .media-prompt-text {
+      font-size: 13px;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .media-prompt-tip {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 8px 12px;
+      background: rgba(59, 130, 246, 0.08);
+      border-radius: 8px;
+      border-left: 3px solid var(--accent-blue);
+    }
+
+    .media-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .media-btn {
+      flex: 1;
+      padding: 10px;
+      background: rgba(39, 39, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .media-btn:hover {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      transform: translateY(-2px);
+    }
+
+    .video-idea-box {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.12), rgba(244, 63, 94, 0.08));
+      border: 1px solid rgba(236, 72, 153, 0.25);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .video-idea-title {
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-primary);
+    }
+
+    .video-idea-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .video-idea-meta {
+      display: flex;
+      gap: 14px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* ============== STRATEGY INSIGHTS ============== */
+    .strategy-box {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(34, 197, 94, 0.08));
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      backdrop-filter: blur(10px);
+    }
+
+    .strategy-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-blue);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .strategy-stat {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      margin-bottom: 6px;
+      padding: 4px 0;
+    }
+
+    .strategy-stat span:first-child {
+      color: var(--text-muted);
+    }
+
+    .strategy-stat span:last-child {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .strategy-tips {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .strategy-tip {
+      font-size: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(63, 63, 70, 0.3);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .strategy-tip:last-child {
+      border-bottom: none;
+    }
+
+    .strategy-tip::before {
+      content: '•';
+      color: var(--accent-blue);
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+        <h1>Auto-Poster <span>Dashboard</span></h1>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value" id="totalPosts">0</div>
+          <div class="stat-label">Generated</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="cryptoPosts">0</div>
+          <div class="stat-label">Crypto</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="vibePosts">0</div>
+          <div class="stat-label">Vibe</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="main-layout">
+      <!-- Sidebar Controls -->
+      <aside class="sidebar">
+        <!-- Sidebar Tabs -->
+        <div class="card" style="padding: 12px;">
+          <div class="tab-container">
+            <button class="tab-btn active" onclick="switchTab('generate')">✍️ Create</button>
+            <button class="tab-btn" onclick="switchTab('trending')">🔥 Trends</button>
+            <button class="tab-btn" onclick="switchTab('checklist')">✅ Plan</button>
+            <button class="tab-btn" onclick="switchTab('media')">🎨 Media</button>
+            <button class="tab-btn" onclick="switchTab('insights')">🧠 Insights</button>
+          </div>
+        </div>
+
+        <!-- TAB: Generate Content -->
+        <div id="tab-generate" class="tab-content active">
+          <div class="card">
+            <h3 class="card-title">⚡ Quick Generate</h3>
+            <div class="category-btns">
+              <button class="btn btn-crypto" onclick="generatePost('crypto')">
+                ₿ Crypto
+              </button>
+              <button class="btn btn-vibe" onclick="generatePost('vibecoding')">
+                💻 Vibe
+              </button>
+            </div>
+            <button class="btn btn-stats" onclick="generateWithStats()">
+              📊 Post with Stats (Past vs Now)
+            </button>
+            <button class="btn btn-news" onclick="generateNews()">
+              📰 News Summary
+            </button>
+            <button class="btn btn-batch" onclick="generateBatch()">
+              📦 Generate 5 Posts
+            </button>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">🧵 Create Thread</h3>
+            <label>Category</label>
+            <select id="threadCategory">
+              <option value="crypto">Crypto</option>
+              <option value="vibecoding">Vibe Coding</option>
+            </select>
+            <label>Topic</label>
+            <input type="text" id="threadTopic" placeholder="e.g., Why Bitcoin matters in 2026">
+            <label>Number of Tweets</label>
+            <select id="threadCount">
+              <option value="3">3 tweets</option>
+              <option value="5" selected>5 tweets</option>
+              <option value="7">7 tweets</option>
+            </select>
+            <button class="btn btn-primary" onclick="generateThread()">
+              Create Thread
+            </button>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">🎯 Custom Topic</h3>
+            <label>Category</label>
+            <select id="customCategory">
+              <option value="crypto">Crypto</option>
+              <option value="vibecoding">Vibe Coding</option>
+            </select>
+            <label>Topic (optional)</label>
+            <input type="text" id="customTopic" placeholder="e.g., Solana ecosystem growth">
+            <button class="btn btn-secondary" onclick="generateCustom()">
+              Generate
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB: Trending Topics -->
+        <div id="tab-trending" class="tab-content">
+          <div class="card">
+            <h3 class="card-title">🔥 What's Trending</h3>
+            <p style="font-size: 12px; color: #71767b; margin-bottom: 12px;">
+              Click a topic to generate content about it
+            </p>
+            <div id="trendingList" class="trending-list">
+              <div class="loading">
+                <div class="spinner"></div>
+                Loading trends...
+              </div>
+            </div>
+            <button class="btn btn-secondary" onclick="loadTrending()" style="margin-top: 12px;">
+              🔄 Refresh Trends
+            </button>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">📰 Latest News</h3>
+            <div id="newsList" class="trending-list">
+              <div class="loading">
+                <div class="spinner"></div>
+                Loading news...
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Daily Checklist -->
+        <div id="tab-checklist" class="tab-content">
+          <div class="card">
+            <h3 class="card-title">📅 Daily Posting Schedule</h3>
+            <div class="checklist-header">
+              <span style="font-size: 12px; color: #71767b;" id="checklistDate">Today</span>
+              <span class="checklist-progress" id="checklistProgress">0/5 done</span>
+            </div>
+            <div id="checklistItems">
+              <div class="loading">
+                <div class="spinner"></div>
+                Loading checklist...
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">📊 Top Account Insights</h3>
+            <div class="strategy-box">
+              <div class="strategy-title">Optimal Posting Strategy</div>
+              <div class="strategy-stat">
+                <span>Posts per day:</span>
+                <span style="color: #00ba7c; font-weight: 600;">4-5 optimal</span>
+              </div>
+              <div class="strategy-stat">
+                <span>Best times:</span>
+                <span>6AM, 12PM, 6PM, 9PM</span>
+              </div>
+              <div class="strategy-stat">
+                <span>Content mix:</span>
+                <span>30% opinion, 25% education</span>
+              </div>
+              <div class="strategy-stat">
+                <span>Media usage:</span>
+                <span>40% with images 📸</span>
+              </div>
+            </div>
+            <div class="strategy-tips">
+              <div class="strategy-tip">🔥 Price predictions get most engagement</div>
+              <div class="strategy-tip">📊 Charts with annotations perform 2x better</div>
+              <div class="strategy-tip">🧵 Educational threads build authority</div>
+              <div class="strategy-tip">⚡ Breaking news + hot take = viral</div>
+              <div class="strategy-tip">📈 "Past vs Now" stats stop the scroll</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Media Generation -->
+        <div id="tab-media" class="tab-content">
+          <div class="card">
+            <h3 class="card-title">🎨 Grok Image Generator</h3>
+            <p style="font-size: 12px; color: #71767b; margin-bottom: 12px;">
+              FREE on X! Use these prompts with @grok
+            </p>
+            <label>Category</label>
+            <select id="mediaCategory" onchange="generateMediaPrompt()">
+              <option value="crypto">Crypto</option>
+              <option value="vibecoding">Vibe Coding</option>
+              <option value="goldsilver">Gold/Silver</option>
+            </select>
+            <label>Mood</label>
+            <select id="mediaMood" onchange="generateMediaPrompt()">
+              <option value="bullish">Bullish 🚀</option>
+              <option value="bearish">Bearish 🐻</option>
+              <option value="educational">Educational 📚</option>
+              <option value="meme">Meme/Humor 😂</option>
+              <option value="relatable">Relatable 💭</option>
+            </select>
+            <div class="media-section">
+              <h4>📝 Your Grok Prompt:</h4>
+              <div class="media-prompt-box">
+                <div class="media-prompt-text" id="grokPromptText">
+                  Click "New Prompt" to generate
+                </div>
+                <div class="media-prompt-tip">
+                  💡 On X: Type "@grok generate an image:" followed by this prompt
+                </div>
+                <div class="media-actions">
+                  <button class="media-btn" onclick="copyGrokPrompt()">📋 Copy</button>
+                  <button class="media-btn" onclick="generateMediaPrompt()">🔄 New Prompt</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">🎬 Video Content Ideas</h3>
+            <div id="videoIdeaBox" class="video-idea-box">
+              <div class="video-idea-title">Speed Coding Reel</div>
+              <div class="video-idea-desc">Record yourself building something cool, sped up 4x</div>
+              <div class="video-idea-meta">
+                <span>⏱️ 30-60 sec</span>
+                <span>🛠️ VS Code, Screen recorder</span>
+              </div>
+            </div>
+            <button class="btn btn-secondary" onclick="getNewVideoIdea()" style="margin-top: 12px;">
+              🎲 New Video Idea
+            </button>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">🖼️ GIF Suggestions</h3>
+            <p style="font-size: 12px; color: #71767b; margin-bottom: 12px;">
+              Search these terms in X's GIF picker
+            </p>
+            <div class="media-prompt-box" id="gifSuggestionBox">
+              <div class="media-prompt-text">Search: "excited celebration" - for wins</div>
+              <div class="media-prompt-text">Search: "mind blown" - for stats</div>
+              <div class="media-prompt-text">Search: "this is fine" - for market dips</div>
+              <div class="media-prompt-text">Search: "typing fast" - for shipping code</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Insights & Top Accounts -->
+        <div id="tab-insights" class="tab-content">
+          <div class="card">
+            <h3 class="card-title">🧠 What You Might Be Missing</h3>
+            <p style="font-size: 12px; color: #71767b; margin-bottom: 12px;">
+              Strategies from top accounts you should implement
+            </p>
+            <div id="missingStrategies">
+              <div class="strategy-tip">🎯 <b>Reply to bigger accounts</b> - Your replies show up in their followers' feeds</div>
+              <div class="strategy-tip">🔁 <b>Quote tweet with hot takes</b> - Piggyback on trending content</div>
+              <div class="strategy-tip">🧵 <b>Thread game</b> - Threads get 10x more impressions</div>
+              <div class="strategy-tip">📊 <b>Data-backed insights</b> - Numbers stop the scroll</div>
+              <div class="strategy-tip">🎨 <b>Custom graphics</b> - Visual content gets 2x engagement</div>
+              <div class="strategy-tip">❓ <b>Engagement bait questions</b> - "Agree or disagree?" drives replies</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">⭐ Top Account Breakdown</h3>
+            <select id="insightCategory" onchange="loadTopAccountInsights()" style="margin-bottom: 12px;">
+              <option value="crypto">Crypto Accounts</option>
+              <option value="vibecoding">Vibe Coding Accounts</option>
+              <option value="ai">AI Accounts</option>
+              <option value="goldsilver">Gold/Silver Accounts</option>
+            </select>
+            <div id="topAccountsBox">
+              <div class="strategy-box">
+                <div class="strategy-title">@cobie (700K+ followers)</div>
+                <div style="font-size: 12px; color: #8899a6; margin-bottom: 8px;">Sardonic humor, contrarian takes, calls out BS</div>
+                <div class="strategy-stat"><span>Posts/day:</span> <span>3-5</span></div>
+                <div class="strategy-stat"><span>Media usage:</span> <span>Rarely (pure text)</span></div>
+                <div class="strategy-stat"><span>What works:</span> <span>Self-deprecating humor</span></div>
+              </div>
+            </div>
+            <button class="btn btn-secondary" onclick="loadTopAccountInsights()" style="margin-top: 8px;">
+              🔄 Load More Accounts
+            </button>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">⚠️ Fact-Checking & Disclaimers</h3>
+            <p style="font-size: 12px; color: #71767b; margin-bottom: 12px;">
+              Important for credibility and legal protection!
+            </p>
+            <div class="strategy-tips">
+              <div class="strategy-tip">✅ Frame opinions as opinions: "I think", "My take", "IMO"</div>
+              <div class="strategy-tip">✅ Add "NFA" to investment content</div>
+              <div class="strategy-tip">✅ Use "could", "may", "might" instead of "will"</div>
+              <div class="strategy-tip">✅ Say "historically" when citing past performance</div>
+              <div class="strategy-tip">✅ Add "DYOR" to recommendations</div>
+              <div class="strategy-tip">❌ Never say "guaranteed profit" or "can't lose"</div>
+              <div class="strategy-tip">❌ Don't claim insider knowledge</div>
+            </div>
+            <div style="background: rgba(244, 33, 46, 0.1); border: 1px solid rgba(244, 33, 46, 0.3); border-radius: 8px; padding: 10px; margin-top: 12px; font-size: 12px;">
+              ⚠️ <b>Remember:</b> Our software adds disclaimers automatically, but always review content before posting. We cannot verify all facts - DYOR!
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">📊 Duplicate Prevention</h3>
+            <div id="duplicateStats" style="font-size: 13px;">
+              <div class="strategy-stat"><span>Content tracked:</span> <span id="dupContentCount">0</span></div>
+              <div class="strategy-stat"><span>Hooks used:</span> <span id="dupHookCount">0</span></div>
+              <div class="strategy-stat"><span>Session posts:</span> <span id="dupSessionCount">0</span></div>
+            </div>
+            <p style="font-size: 11px; color: #71767b; margin-top: 8px;">
+              ✅ No repeats! Each generated post is unique.
+            </p>
+            <button class="btn btn-secondary" onclick="clearDuplicateHistory()" style="margin-top: 8px;">
+              🗑️ Reset History
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Posts Section -->
+      <section class="posts-section">
+        <div class="posts-header">
+          <h2>📝 Generated Posts</h2>
+          <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all" onclick="filterPosts('all', this)">All</button>
+            <button class="filter-tab" data-filter="crypto" onclick="filterPosts('crypto', this)">Crypto</button>
+            <button class="filter-tab" data-filter="vibecoding" onclick="filterPosts('vibecoding', this)">Vibe</button>
+            <button class="filter-tab" data-filter="thread" onclick="filterPosts('thread', this)">Threads</button>
+          </div>
+        </div>
+
+        <div class="posts-grid" id="postsGrid">
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+            <h3>No posts yet</h3>
+            <p>Click a button above to generate your first post!</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = '';
+    let posts = [];
+    let currentFilter = 'all';
+    let checklist = [];
+    let currentGrokPrompt = '';
+
+    // Load posts on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadPosts();
+      loadTrending();
+      loadChecklist();
+      generateMediaPrompt();
+    });
+
+    // ============== TAB SWITCHING ==============
+    function switchTab(tabName) {
+      // Update buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Update content
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+      
+      // Load data for specific tabs
+      if (tabName === 'trending') {
+        loadTrending();
+      } else if (tabName === 'checklist') {
+        loadChecklist();
+      }
+    }
+
+    // ============== TRENDING TOPICS ==============
+    async function loadTrending() {
+      const trendingList = document.getElementById('trendingList');
+      const newsList = document.getElementById('newsList');
+      
+      try {
+        // Load trending topics
+        const trendRes = await fetch(`${API_URL}/api/trends/all`);
+        const trendData = await trendRes.json();
+        
+        if (trendData.success && trendData.trending) {
+          const cryptoTrends = trendData.trending.crypto?.trending || [];
+          const articles = trendData.trending.crypto?.articles || [];
+          
+          // Render trending topics
+          if (cryptoTrends.length > 0) {
+            trendingList.innerHTML = cryptoTrends.slice(0, 8).map(trend => `
+              <div class="trending-item" onclick="generateFromTrend('${escapeForJS(trend.topic)}')">
+                <div class="trending-topic">
+                  <span class="trending-heat">${trend.heat}</span>
+                  <span class="trending-name">${escapeHtml(trend.topic)}</span>
+                </div>
+                <button class="use-topic-btn">Use Topic</button>
+              </div>
+            `).join('');
+          } else {
+            trendingList.innerHTML = '<p style="color: #71767b; font-size: 13px;">No trending topics found. Try refreshing!</p>';
+          }
+          
+          // Render news articles
+          if (articles.length > 0) {
+            newsList.innerHTML = articles.slice(0, 5).map(article => `
+              <div class="trending-item" onclick="generateFromNews('${escapeForJS(article.title)}')">
+                <div class="trending-topic" style="flex: 1;">
+                  <span class="trending-heat">📰</span>
+                  <span class="trending-name" style="font-size: 13px;">${escapeHtml(article.title.substring(0, 60))}...</span>
+                </div>
+                <button class="use-topic-btn">Create Post</button>
+              </div>
+            `).join('');
+          } else {
+            newsList.innerHTML = '<p style="color: #71767b; font-size: 13px;">No recent news found.</p>';
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load trending:', error);
+        trendingList.innerHTML = '<p style="color: #f4212e; font-size: 13px;">Failed to load trends</p>';
+      }
+    }
+
+    async function generateFromTrend(topic) {
+      try {
+        showToast(`Generating about "${topic}"...`);
+        const res = await fetch(`${API_URL}/api/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category: 'crypto', topic })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          posts.unshift(data.post);
+          renderPosts();
+          updateStats();
+          showToast('Trending post generated! 🔥', 'success');
+          switchTab('generate');
+        }
+      } catch (error) {
+        showToast('Generation failed', 'error');
+      }
+    }
+
+    async function generateFromNews(title) {
+      try {
+        showToast('Creating news commentary...');
+        const res = await fetch(`${API_URL}/api/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category: 'crypto', topic: title })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          posts.unshift(data.post);
+          renderPosts();
+          updateStats();
+          showToast('News post generated! 📰', 'success');
+          switchTab('generate');
+        }
+      } catch (error) {
+        showToast('Generation failed', 'error');
+      }
+    }
+
+    // ============== DAILY CHECKLIST ==============
+    async function loadChecklist() {
+      const checklistItems = document.getElementById('checklistItems');
+      
+      try {
+        const res = await fetch(`${API_URL}/api/checklist/crypto`);
+        const data = await res.json();
+        
+        if (data.success) {
+          checklist = data.checklist;
+          document.getElementById('checklistDate').textContent = data.date;
+          document.getElementById('checklistProgress').textContent = `${data.completed}/${data.total} done`;
+          
+          checklistItems.innerHTML = checklist.map(item => `
+            <div class="checklist-item ${item.completed ? 'completed' : ''}" id="checklist-${item.id}">
+              <div class="checklist-checkbox" onclick="toggleChecklist(${item.id})"></div>
+              <div class="checklist-info">
+                <div class="checklist-time">${item.time}</div>
+                <div class="checklist-type">${item.type}</div>
+                <div class="checklist-desc">${item.description}</div>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (error) {
+        console.error('Failed to load checklist:', error);
+        checklistItems.innerHTML = '<p style="color: #71767b; font-size: 13px;">Default schedule: Post at 6AM, 12PM, 6PM, 9PM</p>';
+      }
+    }
+
+    async function toggleChecklist(id) {
+      const item = checklist.find(i => i.id === id);
+      if (!item) return;
+      
+      const newCompleted = !item.completed;
+      
+      try {
+        await fetch(`${API_URL}/api/checklist/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ completed: newCompleted })
+        });
+        
+        item.completed = newCompleted;
+        const el = document.getElementById(`checklist-${id}`);
+        el.classList.toggle('completed', newCompleted);
+        
+        const completed = checklist.filter(i => i.completed).length;
+        document.getElementById('checklistProgress').textContent = `${completed}/${checklist.length} done`;
+        
+        if (newCompleted) {
+          showToast('Nice! Keep posting! 💪', 'success');
+        }
+      } catch (error) {
+        console.error('Failed to update checklist:', error);
+      }
+    }
+
+    // ============== MEDIA GENERATION ==============
+    async function generateMediaPrompt() {
+      const category = document.getElementById('mediaCategory').value;
+      const mood = document.getElementById('mediaMood').value;
+      
+      try {
+        const res = await fetch(`${API_URL}/api/media/grok/${category}?mood=${mood}`);
+        const data = await res.json();
+        
+        if (data.success) {
+          currentGrokPrompt = data.prompt;
+          document.getElementById('grokPromptText').textContent = data.prompt;
+        }
+      } catch (error) {
+        // Fallback prompts if API fails
+        const fallbacks = {
+          crypto: 'A majestic bull made of golden Bitcoin coins, charging through Wall Street, digital art, dramatic lighting',
+          vibecoding: 'A developer shipping code into the universe, code streams flowing from laptop to stars, digital art',
+        };
+        currentGrokPrompt = fallbacks[category] || fallbacks.crypto;
+        document.getElementById('grokPromptText').textContent = currentGrokPrompt;
+      }
+    }
+
+    function copyGrokPrompt() {
+      const fullPrompt = `@grok generate an image: ${currentGrokPrompt}`;
+      navigator.clipboard.writeText(fullPrompt);
+      showToast('Grok prompt copied! 🎨', 'success');
+    }
+
+    async function getNewVideoIdea() {
+      const category = document.getElementById('mediaCategory').value;
+      
+      try {
+        const res = await fetch(`${API_URL}/api/media/video/${category}`);
+        const data = await res.json();
+        
+        if (data.success && data.idea) {
+          document.getElementById('videoIdeaBox').innerHTML = `
+            <div class="video-idea-title">${data.idea.title}</div>
+            <div class="video-idea-desc">${data.idea.description}</div>
+            <div class="video-idea-meta">
+              <span>⏱️ ${data.idea.duration}</span>
+              <span>🛠️ ${data.idea.tools.join(', ')}</span>
+            </div>
+          `;
+        }
+      } catch (error) {
+        showToast('Failed to get video idea', 'error');
+      }
+    }
+
+    // ============== EXISTING FUNCTIONS ==============
+
+    async function loadPosts() {
+      try {
+        const res = await fetch(`${API_URL}/api/posts`);
+        const data = await res.json();
+        posts = data.posts || [];
+        renderPosts();
+        updateStats();
+      } catch (error) {
+        console.error('Failed to load posts:', error);
+      }
+    }
+
+    async function generatePost(category) {
+      const btn = event.target;
+      btn.disabled = true;
+
+      try {
+        showToast('Generating...');
+        const res = await fetch(`${API_URL}/api/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          posts.unshift(data.post);
+          renderPosts();
+          updateStats();
+          showToast('Post generated! 🎉', 'success');
+        } else {
+          showToast(data.error || 'Generation failed', 'error');
+        }
+      } catch (error) {
+        showToast('Network error', 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function generateNews() {
+      const btn = event.target;
+      btn.disabled = true;
+
+      try {
+        showToast('Fetching news...');
+        const res = await fetch(`${API_URL}/api/generate/news`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await res.json();
+
+        if (data.success && data.post) {
+          posts.unshift(data.post);
+          renderPosts();
+          updateStats();
+          showToast('News post generated! 📰', 'success');
+        } else {
+          showToast(data.message || 'No news found', 'error');
+        }
+      } catch (error) {
+        showToast('Network error', 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function generateWithStats() {
+      const btn = event.target;
+      btn.disabled = true;
+
+      const category = Math.random() > 0.5 ? 'crypto' : 'vibecoding';
+
+      try {
+        showToast('Generating post with stats...');
+        const res = await fetch(`${API_URL}/api/generate/stats`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          posts.unshift(data.post);
+          renderPosts();
+          updateStats();
+          showToast('Stats post generated! 📊', 'success');
+        } else {
+          showToast(data.error || 'Generation failed', 'error');
+        }
+      } catch (error) {
+        showToast('Network error', 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function generateBatch() {
+      const btn = event.target;
+      btn.disabled = true;
+
+      try {
+        showToast('Generating 5 posts...');
+        const res = await fetch(`${API_URL}/api/generate/batch`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ count: 5 })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          posts = [...data.posts, ...posts];
+          renderPosts();
+          updateStats();
+          showToast(`${data.count} posts generated! 📦`, 'success');
+        } else {
+          showToast(data.error || 'Generation failed', 'error');
+        }
+      } catch (error) {
+        showToast('Network error', 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function generateThread() {
+      const btn = event.target;
+      btn.disabled = true;
+
+      const category = document.getElementById('threadCategory').value;
+      const topic = document.getElementById('threadTopic').value;
+      const tweetCount = parseInt(document.getElementById('threadCount').value);
+
+      if (!topic.trim()) {
+        showToast('Please enter a topic', 'error');
+        btn.disabled = false;
+        return;
+      }
+
+      try {
+        showToast('Creating thread...');
+        const res = await fetch(`${API_URL}/api/generate/thread`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category, topic, tweetCount })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          posts.unshift(data.post);
+          renderPosts();
+          updateStats();
+          showToast('Thread created! 🧵', 'success');
+          document.getElementById('threadTopic').value = '';
+        } else {
+          showToast(data.error || 'Thread failed', 'error');
+        }
+      } catch (error) {
+        showToast('Network error', 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function generateCustom() {
+      const btn = event.target;
+      btn.disabled = true;
+
+      const category = document.getElementById('customCategory').value;
+      const topic = document.getElementById('customTopic').value || null;
+
+      try {
+        showToast('Generating...');
+        const res = await fetch(`${API_URL}/api/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category, topic })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          posts.unshift(data.post);
+          renderPosts();
+          updateStats();
+          showToast('Post generated! 🎯', 'success');
+        } else {
+          showToast(data.error || 'Generation failed', 'error');
+        }
+      } catch (error) {
+        showToast('Network error', 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function deletePost(id) {
+      if (!confirm('Delete this post?')) return;
+
+      try {
+        await fetch(`${API_URL}/api/posts/${id}`, { method: 'DELETE' });
+        posts = posts.filter(p => p.id !== id);
+        renderPosts();
+        updateStats();
+        showToast('Post deleted', 'success');
+      } catch (error) {
+        showToast('Failed to delete', 'error');
+      }
+    }
+
+    function copyPost(content) {
+      navigator.clipboard.writeText(content);
+      showToast('Copied to clipboard! 📋', 'success');
+    }
+
+    function filterPosts(filter, btn) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      renderPosts();
+    }
+
+    function renderPosts() {
+      const grid = document.getElementById('postsGrid');
+      let filteredPosts = posts;
+
+      if (currentFilter !== 'all') {
+        if (currentFilter === 'thread') {
+          filteredPosts = posts.filter(p => p.type === 'thread');
+        } else {
+          filteredPosts = posts.filter(p => p.category === currentFilter);
+        }
+      }
+
+      if (filteredPosts.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+            <h3>No posts yet</h3>
+            <p>Click a button to generate your first post!</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filteredPosts.map(post => {
+        const charClass = post.charCount > 280 ? 'danger' : post.charCount > 250 ? 'warning' : '';
+        const date = new Date(post.createdAt).toLocaleString();
+
+        if (post.type === 'thread' && post.tweets) {
+          return `
+            <div class="post-card">
+              <div class="post-header">
+                <div class="post-meta">
+                  <span class="post-category ${post.category}">${post.category}</span>
+                  <span class="post-type">🧵 Thread • ${post.tweetCount} tweets</span>
+                </div>
+                <div class="post-actions">
+                  <button class="post-action" onclick="copyPost(\`${post.tweets.join('\\n\\n')}\`)" title="Copy">
+                    📋
+                  </button>
+                  <button class="post-action delete" onclick="deletePost(${post.id})" title="Delete">
+                    🗑️
+                  </button>
+                </div>
+              </div>
+              <div class="thread-tweets">
+                ${post.tweets.map((t, i) => `
+                  <div class="thread-tweet">
+                    <div class="thread-tweet-num">${i + 1}/${post.tweets.length}</div>
+                    <div>${escapeHtml(t)}</div>
+                  </div>
+                `).join('')}
+              </div>
+              <div class="post-footer">
+                <span>${date}</span>
+                <span>Topic: ${post.topic || 'random'}</span>
+              </div>
+            </div>
+          `;
+        }
+
+        // Build stat section if present
+        const statHtml = post.stat ? `
+          <div class="post-stat">
+            <div class="post-stat-label">📊 Past vs Now</div>
+            <div class="post-stat-content">
+              <div class="post-stat-item"><span>Past:</span> ${escapeHtml(post.stat.past)}</div>
+              <div class="post-stat-item"><span>Now:</span> ${escapeHtml(post.stat.now)}</div>
+              <div class="post-stat-item"><span>Change:</span> ${escapeHtml(post.stat.change)}</div>
+            </div>
+          </div>
+        ` : '';
+
+        // Build image prompt section if present
+        const imagePromptHtml = post.imagePrompt ? `
+          <div class="post-image-prompt">
+            <div class="post-image-prompt-label">
+              🎨 Grok Image Prompt
+              <button class="copy-prompt-btn" onclick="copyPost(\`${escapeForJS(post.imagePrompt)}\`)">Copy</button>
+            </div>
+            <div class="post-image-prompt-text">${escapeHtml(post.imagePrompt)}</div>
+          </div>
+        ` : '';
+
+        // Build score section if present
+        const scoreHtml = post.contentScore ? `
+          <span class="content-score grade-${post.contentScore.grade}">
+            Score: ${post.contentScore.grade} (${post.contentScore.percentage}%)
+          </span>
+        ` : '';
+
+        // Build media recommendation if present
+        const mediaRecHtml = post.shouldIncludeMedia && post.mediaRecommendation ? `
+          <span class="media-rec-badge">📸 Add: ${post.mediaRecommendation.type}</span>
+        ` : '';
+
+        // Build strategy info section
+        const strategyHtml = post.contentScore ? `
+          <div class="post-strategy">
+            <div class="post-strategy-title">📊 Content Analysis</div>
+            ${post.contentType ? `<div class="post-strategy-item"><span>Content type:</span> <span>${post.contentType.replace(/_/g, ' ')}</span></div>` : ''}
+            ${post.shouldIncludeMedia ? `<div class="post-strategy-item"><span>Media:</span> <span>✅ Recommended (${post.mediaRecommendation?.type || 'image'})</span></div>` : ''}
+            <div class="score-feedback">
+              ${post.contentScore.feedback.slice(0, 4).map(f => `<div class="score-feedback-item">${f}</div>`).join('')}
+            </div>
+          </div>
+        ` : '';
+
+        const typeLabel = post.type === 'news' ? '📰 News' : post.type === 'stats' || post.stat ? '📊 Stats' : '✨ Original';
+
+        return `
+          <div class="post-card">
+            <div class="post-header">
+              <div class="post-meta">
+                <span class="post-category ${post.category}">${post.category}</span>
+                <span class="post-type">${typeLabel}</span>
+                ${scoreHtml}
+                ${mediaRecHtml}
+              </div>
+              <div class="post-actions">
+                <button class="post-action" onclick="copyPost(\`${escapeForJS(post.content)}\`)" title="Copy Tweet">
+                  📋
+                </button>
+                <button class="post-action delete" onclick="deletePost(${post.id})" title="Delete">
+                  🗑️
+                </button>
+              </div>
+            </div>
+            ${statHtml}
+            <div class="post-content">${formatContent(post.content)}</div>
+            ${imagePromptHtml}
+            ${strategyHtml}
+            <div class="post-footer">
+              <span>${date}</span>
+              <span class="char-count ${charClass}">
+                ${post.charCount}/280 chars
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function formatContent(text) {
+      // Highlight hooks (first sentence or phrase)
+      const escaped = escapeHtml(text);
+      const lines = escaped.split('\n');
+      if (lines[0]) {
+        lines[0] = `<span class="hook">${lines[0]}</span>`;
+      }
+      return lines.join('\n');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function escapeForJS(text) {
+      return text.replace(/`/g, '\\`').replace(/\$/g, '\\$');
+    }
+
+    function updateStats() {
+      document.getElementById('totalPosts').textContent = posts.length;
+      document.getElementById('cryptoPosts').textContent = posts.filter(p => p.category === 'crypto').length;
+      document.getElementById('vibePosts').textContent = posts.filter(p => p.category === 'vibecoding').length;
+      
+      // Also update duplicate stats
+      loadDuplicateStats();
+    }
+
+    function showToast(message, type = '') {
+      // Remove existing toasts
+      document.querySelectorAll('.toast').forEach(t => t.remove());
+
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // ============== INSIGHTS TAB FUNCTIONS ==============
+
+    async function loadTopAccountInsights() {
+      const category = document.getElementById('insightCategory').value;
+      const box = document.getElementById('topAccountsBox');
+      
+      try {
+        const res = await fetch(`${API_URL}/api/insights/accounts/${category}`);
+        const data = await res.json();
+        
+        if (data.success && data.accounts) {
+          const accounts = data.accounts.tier1_whales || data.accounts.tier1_legends || data.accounts.tier1_influencers || [];
+          
+          if (accounts.length > 0) {
+            box.innerHTML = accounts.slice(0, 3).map(account => `
+              <div class="strategy-box" style="margin-bottom: 8px;">
+                <div class="strategy-title">${account.handle} (${account.followers})</div>
+                <div style="font-size: 12px; color: #8899a6; margin-bottom: 8px;">${account.style}</div>
+                <div class="strategy-stat"><span>Posts/day:</span> <span>${account.postFrequency || '3-5'}</span></div>
+                <div class="strategy-stat"><span>Media:</span> <span>${account.mediaUsage || 'Mixed'}</span></div>
+                ${account.whatWorks ? `<div style="margin-top: 8px; font-size: 11px; color: #71767b;">
+                  <b>What works:</b> ${account.whatWorks.slice(0, 2).join(', ')}
+                </div>` : ''}
+              </div>
+            `).join('');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load account insights:', error);
+      }
+    }
+
+    async function loadDuplicateStats() {
+      try {
+        const res = await fetch(`${API_URL}/api/duplicates/stats`);
+        const data = await res.json();
+        
+        if (data.success && data.stats) {
+          document.getElementById('dupContentCount').textContent = data.stats.totalContentHashes || 0;
+          document.getElementById('dupHookCount').textContent = data.stats.usedHooks || 0;
+          document.getElementById('dupSessionCount').textContent = data.stats.sessionPosts || 0;
+        }
+      } catch (error) {
+        console.error('Failed to load duplicate stats:', error);
+      }
+    }
+
+    async function clearDuplicateHistory() {
+      if (!confirm('Clear all content history? This allows previously used content to be generated again.')) {
+        return;
+      }
+      
+      try {
+        await fetch(`${API_URL}/api/duplicates/clear`, { method: 'DELETE' });
+        showToast('History cleared! ♻️', 'success');
+        loadDuplicateStats();
+      } catch (error) {
+        showToast('Failed to clear history', 'error');
+      }
+    }
+
+    // Load insights when switching to that tab
+    const originalSwitchTab = switchTab;
+    switchTab = function(tabName) {
+      // Update buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Update content
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+      
+      // Load data for specific tabs
+      if (tabName === 'trending') {
+        loadTrending();
+      } else if (tabName === 'checklist') {
+        loadChecklist();
+      } else if (tabName === 'insights') {
+        loadTopAccountInsights();
+        loadDuplicateStats();
+      }
+    };
+  </script>
+</body>
+</html>
