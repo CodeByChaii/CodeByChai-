@@ -54,12 +54,16 @@ function ProjectCard({ p }: { p: Project }) {
 
     // Load ratings and user's previous rating
     const loadRatings = async () => {
-      const [ratingsData, userRatingData] = await Promise.all([
-        getRatings(p.id),
-        getUserRating(p.id, fp),
-      ]);
-      setRatings(ratingsData);
-      setUserRating(userRatingData);
+      try {
+        const [ratingsData, userRatingData] = await Promise.all([
+          getRatings(p.id),
+          getUserRating(p.id, fp),
+        ]);
+        setRatings(ratingsData);
+        setUserRating(userRatingData);
+      } catch (error) {
+        console.error("Error loading ratings:", error);
+      }
     };
 
     loadRatings();
