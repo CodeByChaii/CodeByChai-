@@ -42,36 +42,7 @@ export function HeroSection({ hero: heroProp, site: siteProp }: Props = {}) {
   };
 
   return (
-    <section className="relative overflow-hidden text-[color:var(--foreground)]">
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(125deg, var(--gradient-start) 0%, var(--gradient-mid) 50%, var(--gradient-end) 100%)",
-        }}
-      />
-      {/* Subtle parallax / floating orbs (antigravity feel) */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
-        <motion.div
-          className="absolute w-96 h-96 rounded-full blur-3xl -top-32 -left-32"
-          style={{ backgroundColor: "var(--orb-pink)" }}
-          animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
-          transition={{ ...floatTransition, duration: 8 }}
-        />
-        <motion.div
-          className="absolute w-64 h-64 rounded-full blur-3xl top-1/2 -right-24"
-          style={{ backgroundColor: "var(--orb-violet)" }}
-          animate={{ x: [0, -25, 0], y: [0, 15, 0] }}
-          transition={{ ...floatTransition, duration: 7 }}
-        />
-        <motion.div
-          className="absolute w-48 h-48 rounded-full blur-3xl bottom-10 left-1/2"
-          style={{ backgroundColor: "var(--orb-aqua)" }}
-          animate={{ x: [0, 18, 0], y: [0, -12, 0] }}
-          transition={{ ...floatTransition, duration: 9 }}
-        />
-      </div>
-
+    <section className="relative overflow-hidden text-[color:var(--foreground)]" style={{ backgroundColor: "var(--background)" }}>
       <div className="relative z-10 mx-auto flex max-w-5xl flex-col gap-12 px-4 py-20 lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
         <div className="space-y-6">
           <motion.h1
@@ -100,99 +71,111 @@ export function HeroSection({ hero: heroProp, site: siteProp }: Props = {}) {
           >
             {site.heroDescription}
           </motion.p>
-          <motion.div
-            className="flex flex-wrap items-center gap-3"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: stagger * 3, ease: "easeOut" }}
-          >
-            <motion.a
-              href="#projects"
-              className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold shadow-lg transition-all"
-              style={{
-                background: "linear-gradient(120deg, var(--accent) 0%, var(--accent-strong) 60%)",
-                color: "var(--accent-foreground)",
-                boxShadow: "var(--shadow)",
-              }}
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              View projects
-            </motion.a>
-            <motion.a
-              href="#about"
-              className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-all hover:border-[color:var(--accent)]"
-              style={{
-                backgroundColor: "var(--surface)",
-                color: "var(--foreground)",
-                border: "1px solid var(--border)",
-              }}
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              About the work
-            </motion.a>
-          </motion.div>
         </div>
 
         <motion.div
-          className="relative overflow-hidden rounded-2xl border p-1 shadow-2xl"
+          className="relative overflow-hidden rounded-xl border shadow-2xl"
           style={{
             borderColor: "var(--border)",
-            backgroundColor: "var(--glass)",
+            backgroundColor: "var(--card)",
             boxShadow: "var(--shadow)",
           }}
-          onMouseMove={handleMove}
-          onMouseLeave={handleLeave}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: stagger * 2 }}
         >
-          <motion.div
-            className="relative overflow-hidden rounded-xl px-6 py-8"
-            style={{
-              background:
-                "radial-gradient(circle at 20% 20%, var(--orb-pink), transparent 45%), radial-gradient(circle at 80% 30%, var(--orb-aqua), transparent 45%), radial-gradient(circle at 60% 80%, var(--orb-violet), transparent 45%)",
-              transformStyle: "preserve-3d",
-              transform: "perspective(1200px)",
-              x: prefersReducedMotion ? 0 : orbX,
-              y: prefersReducedMotion ? 0 : orbY,
-            }}
-          >
+          {/* VS Code-style header */}
+          <div className="flex items-center gap-2 border-b px-4 py-2" style={{ borderColor: "var(--border)", backgroundColor: "var(--surface)" }}>
+            <div className="flex gap-1.5">
+              <div className="h-3 w-3 rounded-full" style={{ backgroundColor: "#ff5f56" }} />
+              <div className="h-3 w-3 rounded-full" style={{ backgroundColor: "#ffbd2e" }} />
+              <div className="h-3 w-3 rounded-full" style={{ backgroundColor: "#27c93f" }} />
+            </div>
+            <span className="ml-2 text-sm font-mono" style={{ color: "var(--muted)" }}>portfolio.tsx</span>
+          </div>
+          
+          {/* Code editor content */}
+          <div className="p-4 font-mono text-sm leading-relaxed">
             <motion.div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0))",
-                mixBlendMode: "screen",
-              }}
-            />
-            <motion.div
-              className="relative space-y-3"
-              style={{
-                rotateX: prefersReducedMotion ? 0 : tiltX,
-                rotateY: prefersReducedMotion ? 0 : tiltY,
-              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, delay: 0.5 }}
             >
-              <p className="text-sm uppercase tracking-[0.2em]" style={{ color: "var(--muted)" }}>
-                Playground of small builds
-              </p>
-              <h3 className="text-2xl font-bold" style={{ color: "var(--foreground)" }}>
-                Micro demos, orbs, and Remotion badges
-              </h3>
-              <p className="text-sm" style={{ color: "var(--muted)" }}>
-                Hover to stir the orbs. Built with Motion and Remotion, tuned for the new palette.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {["Motion", "Remotion", "Flutter", "Edge"].map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full px-3 py-1 text-xs font-semibold"
-                    style={{ backgroundColor: "var(--accent-soft)", color: "var(--accent)" }}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+              <span style={{ color: "#c678dd" }}>const</span>{" "}
+              <span style={{ color: "#e06c75" }}>project</span>{" "}
+              <span style={{ color: "#abb2bf" }}>=</span>{" "}
+              <span style={{ color: "#abb2bf" }}>{"{"}</span>
             </motion.div>
-          </motion.div>
+            <motion.div
+              className="pl-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, delay: 0.7 }}
+            >
+              <span style={{ color: "#e06c75" }}>name</span>
+              <span style={{ color: "#abb2bf" }}>:</span>{" "}
+              <span style={{ color: "#98c379" }}>&quot;CodeByChai&quot;</span>
+              <span style={{ color: "#abb2bf" }}>,</span>
+            </motion.div>
+            <motion.div
+              className="pl-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, delay: 0.9 }}
+            >
+              <span style={{ color: "#e06c75" }}>stack</span>
+              <span style={{ color: "#abb2bf" }}>:</span>{" "}
+              <span style={{ color: "#abb2bf" }}>[</span>
+              <span style={{ color: "#98c379" }}>&quot;Motion&quot;</span>
+              <span style={{ color: "#abb2bf" }}>,</span>{" "}
+              <span style={{ color: "#98c379" }}>&quot;Remotion&quot;</span>
+              <span style={{ color: "#abb2bf" }}>],</span>
+            </motion.div>
+            <motion.div
+              className="pl-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, delay: 1.1 }}
+            >
+              <span style={{ color: "#e06c75" }}>focus</span>
+              <span style={{ color: "#abb2bf" }}>:</span>{" "}
+              <span style={{ color: "#98c379" }}>&quot;Small builds&quot;</span>
+              <span style={{ color: "#abb2bf" }}>,</span>
+            </motion.div>
+            <motion.div
+              className="pl-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, delay: 1.3 }}
+            >
+              <span style={{ color: "#e06c75" }}>vibe</span>
+              <span style={{ color: "#abb2bf" }}>:</span>{" "}
+              <span style={{ color: "#98c379" }}>&quot;Playful experiments&quot;</span>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, delay: 1.5 }}
+            >
+              <span style={{ color: "#abb2bf" }}>{"}"}</span>
+              <span style={{ color: "#abb2bf" }}>;</span>
+            </motion.div>
+            <motion.div
+              className="mt-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, delay: 1.7 }}
+            >
+              <span style={{ color: "#5c6370" }}>// Building in public...</span>
+              <motion.span
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ duration: 0.8, repeat: Infinity }}
+                style={{ color: "var(--accent)" }}
+              >
+                ▮
+              </motion.span>
+            </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>
