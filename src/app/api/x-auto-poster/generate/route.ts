@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-  apiKey: process.env.X_AUTO_POSTER_OPENAI_KEY || process.env.OPENAI_API_KEY,
-});
+function getOpenAIClient() {
+  return new OpenAI({
+    apiKey: process.env.X_AUTO_POSTER_OPENAI_KEY || process.env.OPENAI_API_KEY,
+  });
+}
 
 // Crypto and coding hooks that stop the scroll
 const HOOKS = {
@@ -59,6 +61,7 @@ Write about: JavaScript, TypeScript, React, Next.js, web development, coding str
 Tone: Funny, relatable, slightly chaotic. Like talking to a dev friend over coffee.`;
 
 async function generateCryptoTweet(topic?: string) {
+  const openai = getOpenAIClient();
   const hook = HOOKS.crypto[Math.floor(Math.random() * HOOKS.crypto.length)];
   const topicPrompt = topic ? `Topic: ${topic}` : "Pick any trending crypto topic";
   
