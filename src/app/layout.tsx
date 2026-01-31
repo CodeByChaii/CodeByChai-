@@ -80,12 +80,12 @@ const jsonLd = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const themeCookie = cookieStore?.get?.("theme")?.value;
   const isValidTheme = themeCookie === "light" || themeCookie === "dark" || themeCookie === "system";
   const initialTheme = isValidTheme ? themeCookie : "system";
