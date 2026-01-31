@@ -337,7 +337,13 @@ function ProjectCard({ p, fingerprint }: { p: Project; fingerprint: string }) {
       </div>
     </motion.article>
   );
-}const [fingerprint, setFingerprint] = useState("");
+}
+
+type Props = { projects: Project[] };
+
+export function ProjectsSection({ projects }: Props) {
+  const list = projects ?? staticProjects;
+  const [fingerprint, setFingerprint] = useState("");
 
   useEffect(() => {
     // Generate fingerprint once for all cards
@@ -371,13 +377,7 @@ function ProjectCard({ p, fingerprint }: { p: Project; fingerprint: string }) {
           viewport={{ once: true, margin: "-40px" }}
         >
           {list.map((p) => (
-            <ProjectCard key={p.id} p={p} fingerprint={fingerprint
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-40px" }}
-        >
-          {list.map((p) => (
-            <ProjectCard key={p.id} p={p} />
+            <ProjectCard key={p.id} p={p} fingerprint={fingerprint} />
           ))}
         </motion.div>
       </div>
