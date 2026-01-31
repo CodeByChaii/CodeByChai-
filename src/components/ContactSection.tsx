@@ -61,6 +61,21 @@ export function ContactSection({ site: siteProp }: Props = {}) {
           >
             X · @CodeByChai
           </motion.a>
+          <motion.a
+            href="https://instagram.com/mrf.living"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-lg border px-5 py-2.5 font-medium transition-all hover:border-[color:var(--accent)]"
+            style={{
+              borderColor: "var(--border)",
+              color: "var(--foreground)",
+              backgroundColor: "var(--surface)",
+            }}
+            whileHover={{ scale: 1.03, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            Instagram · @mrf.living
+          </motion.a>
         </div>
 
         <div className="mt-10 max-w-xl mx-auto text-left">
