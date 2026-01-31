@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "motion/react";
 import { HERO, SITE } from "@/data/site";
 import type { SiteSettingsMap } from "@/lib/db/site-settings";
@@ -11,12 +11,64 @@ type Props = {
 };
 
 const stagger = 0.12;
-const floatTransition = { repeat: Infinity, duration: 6, ease: "easeInOut" as const };
+
+// Humorous code that types out character by character
+const CODE_LINES = [
+  { text: "function fixBug() {", color: "#c678dd", delay: 0 },
+  { text: "  // TODO: Actually fix the bug", color: "#5c6370", delay: 0.5 },
+  { text: "  console.log('It works on my machine 🤷');", color: "#98c379", delay: 1.2 },
+  { text: "  return true; // Ship it!", color: "#c678dd", delay: 2.0 },
+  { text: "}", color: "#c678dd", delay: 2.6 },
+  { text: "", color: "#abb2bf", delay: 3.0 },
+  { text: "// Production ready ✨", color: "#5c6370", delay: 3.3 },
+];
+
+function TypingCodeLine({ text, color, delay, startTyping }: { text: string; color: string; delay: number; startTyping: boolean }) {
+  const [displayedText, setDisplayedText] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (!startTyping) return;
+
+    const timer = setTimeout(() => {
+      if (currentIndex < text.length) {
+        setDisplayedText(text.substring(0, currentIndex + 1));
+        setCurrentIndex(currentIndex + 1);
+      }
+    }, delay * 1000 + currentIndex * 50); // 50ms per character
+
+    return () => clearTimeout(timer);
+  }, [currentIndex, text, delay, startTyping]);
+
+  const showCursor = currentIndex < text.length;
+
+  return (
+    <div className="font-mono text-sm leading-relaxed">
+      <span style={{ color }}>{displayedText}</span>
+      {showCursor && (
+        <motion.span
+          animate={{ opacity: [1, 0, 1] }}
+          transition={{ duration: 0.8, repeat: Infinity }}
+          style={{ color: "var(--accent)" }}
+        >
+          ▮
+        </motion.span>
+      )}
+    </div>
+  );
+}
 
 export function HeroSection({ hero: heroProp, site: siteProp }: Props = {}) {
   const hero = heroProp ?? HERO;
   const site = siteProp ?? SITE;
   const prefersReducedMotion = useReducedMotion();
+  const [startTyping, setStartTyping] = useState(false);
+
+  useEffect(() => {
+    // Start typing animation after component mounts
+    const timer = setTimeout(() => setStartTyping(true), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
