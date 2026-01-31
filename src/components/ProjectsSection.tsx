@@ -40,24 +40,23 @@ const item = {
   show: { opacity: 1, y: 0 },
 };
 
-function ProjectCard({ p }: { p: Project }) {
+function ProjectCard({ p, fingerprint }: { p: Project; fingerprint: string }) {
   const hasLinks = projectHasLinks(p);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [userRating, setUserRating] = useState<"up" | "down" | null>(null);
   const [ratings, setRatings] = useState({ up: 0, down: 0 });
-  const [fingerprint, setFingerprint] = useState("");
+  const [isRating, setIsRating] = useState(false);
   const logo = useMemo(() => p.logoUrl || p.thumbnail || null, [p.logoUrl, p.thumbnail]);
 
   useEffect(() => {
-    const fp = getBrowserFingerprint();
-    setFingerprint(fp);
+    if (!fingerprint) return;
 
     // Load ratings and user's previous rating
     const loadRatings = async () => {
       try {
         const [ratingsData, userRatingData] = await Promise.all([
           getRatings(p.id),
-          getUserRating(p.id, fp),
+          getUserRating(p.id, fingerprint),
         ]);
         setRatings(ratingsData);
         setUserRating(userRatingData);
@@ -67,10 +66,14 @@ function ProjectCard({ p }: { p: Project }) {
     };
 
     loadRatings();
-  }, [p.id]);
+  }, [p.id, fingerprint]);
 
   const handleRating = async (rating: "up" | "down") => {
-    if (!fingerprint) return;
+    if (!fingerprint || isRating) return;
+
+    setIsRating(true);
+    const oldRating = userRating;
+    const oldRatings = { ...ratings };
 
     try {
       // Toggle off if clicking same rating
@@ -85,12 +88,11 @@ function ProjectCard({ p }: { p: Project }) {
         await removeRating(p.id, fingerprint);
       } else {
         // Optimistically update UI
-        const oldRating = userRating;
         setUserRating(rating);
-        setRatings(prev => ({
-          up: rating === "up" ? prev.up + 1 : (oldRating === "up" ? prev.up - 1 : prev.up),
-          down: rating === "down" ? prev.down + 1 : (oldRating === "down" ? prev.down - 1 : prev.down),
-        }));
+        setRatings({
+          up: rating === "up" ? ratings.up + 1 : (oldRating === "up" ? ratings.up - 1 : ratings.up),
+          down: rating === "down" ? ratings.down + 1 : (oldRating === "down" ? ratings.down - 1 : ratings.down),
+        });
         
         await submitRating(p.id, rating, fingerprint);
       }
@@ -100,11 +102,11 @@ function ProjectCard({ p }: { p: Project }) {
       setRatings(newRatings);
     } catch (error) {
       console.error("Error handling rating:", error);
-      // Reload ratings on error
-      const newRatings = await getRatings(p.id);
-      setRatings(newRatings);
-      const userRatingData = await getUserRating(p.id, fingerprint);
-      setUserRating(userRatingData);
+      // Revert to old state on error
+      setUserRating(oldRating);
+      setRatings(oldRatings);
+    } finally {
+      setIsRating(false);
     }
   };
 
@@ -315,14 +317,17 @@ function ProjectCard({ p }: { p: Project }) {
               <motion.button
                 type="button"
                 onClick={() => handleRating("up")}
+                disabled={isRating}
                 className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition"
                 style={{
                   borderColor: userRating === "up" ? "var(--accent)" : "var(--border)",
                   color: userRating === "up" ? "var(--accent)" : "var(--foreground)",
                   backgroundColor: userRating === "up" ? "var(--accent-soft)" : "var(--surface)",
+                  opacity: isRating ? 0.6 : 1,
+                  cursor: isRating ? "not-allowed" : "pointer",
                 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={!isRating ? { scale: 1.05 } : {}}
+                whileTap={!isRating ? { scale: 0.95 } : {}}
                 aria-pressed={userRating === "up"}
               >
                 <span aria-hidden>👍</span>
@@ -331,14 +336,17 @@ function ProjectCard({ p }: { p: Project }) {
               <motion.button
                 type="button"
                 onClick={() => handleRating("down")}
+                disabled={isRating}
                 className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition"
                 style={{
                   borderColor: userRating === "down" ? "var(--accent)" : "var(--border)",
                   color: userRating === "down" ? "var(--accent)" : "var(--foreground)",
                   backgroundColor: userRating === "down" ? "var(--accent-soft)" : "var(--surface)",
+                  opacity: isRating ? 0.6 : 1,
+                  cursor: isRating ? "not-allowed" : "pointer",
                 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={!isRating ? { scale: 1.05 } : {}}
+                whileTap={!isRating ? { scale: 0.95 } : {}}
                 aria-pressed={userRating === "down"}
               >
                 <span aria-hidden>👎</span>
@@ -350,12 +358,14 @@ function ProjectCard({ p }: { p: Project }) {
       </div>
     </motion.article>
   );
-}
+}const [fingerprint, setFingerprint] = useState("");
 
-type Props = { projects: Project[] };
+  useEffect(() => {
+    // Generate fingerprint once for all cards
+    const fp = getBrowserFingerprint();
+    setFingerprint(fp);
+  }, []);
 
-export function ProjectsSection({ projects }: Props) {
-  const list = projects ?? staticProjects;
   return (
     <motion.section
       id="projects"
@@ -377,6 +387,12 @@ export function ProjectsSection({ projects }: Props) {
         <motion.div
           className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
           variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-40px" }}
+        >
+          {list.map((p) => (
+            <ProjectCard key={p.id} p={p} fingerprint={fingerprint
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-40px" }}
