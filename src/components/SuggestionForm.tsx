@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "motion/react";
+import { useState } from "react";
 import { submitSuggestion } from "@/app/actions/suggestions";
 
 export function SuggestionForm() {
