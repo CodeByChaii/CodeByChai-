@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.X_AUTO_POSTER_OPENAI_KEY || process.env.OPENAI_API_KEY,
 });
 
 // Crypto and coding hooks that stop the scroll
@@ -108,7 +108,7 @@ Keep it under 240 characters. Make it funny or insightful.`,
 
 export async function POST(request: Request) {
   try {
-    if (!process.env.OPENAI_API_KEY) {
+    if (!process.env.X_AUTO_POSTER_OPENAI_KEY && !process.env.OPENAI_API_KEY) {
       return NextResponse.json(
         { success: false, error: "OpenAI API key not configured" },
         { status: 500 }
