@@ -18,6 +18,7 @@ export const projects: Project[] = [
     tech: ["Web", "MediaRecorder", "TypeScript"],
     webUrl: "/projects/screenrec",
     stack: "Capture",
+    logoUrl: "https://unavatar.io/x/CodeByChai",
   },
   {
     id: "x-auto-poster",
@@ -32,6 +33,7 @@ export const projects: Project[] = [
     tech: ["Next.js", "OpenAI", "TypeScript"],
     webUrl: "/x-auto-poster",
     stack: "Social",
+    logoUrl: "https://unavatar.io/x/CodeByChai",
   },
   {
     id: "suggest-project",

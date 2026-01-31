@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { SITE } from "@/data/site";
 import "./globals.css";
 
@@ -32,8 +33,8 @@ export const metadata: Metadata = {
   authors: [{ name: SITE.fullName, url: SITE.url }],
   creator: SITE.fullName,
   icons: {
-    icon: "https://unavatar.io/x/CodeByChai",
-    apple: "https://unavatar.io/x/CodeByChai",
+    icon: "/favicon.ico",
+    apple: "/favicon.ico",
   },
   openGraph: {
     title,
@@ -101,6 +102,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased`}
       >
         <ThemeProvider initialTheme={initialTheme}>
+          <AnimatedBackground />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

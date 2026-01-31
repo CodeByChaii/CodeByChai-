@@ -9,15 +9,6 @@ import { ThemeToggle } from "./ThemeToggle";
 
 type Props = { site?: SiteSettingsMap["site"] };
 
-const navLinks = [
-  { href: "#about", label: "About" },
-  { href: "#projects", label: "Projects" },
-  { href: "#contact", label: "Contact" },
-] as const;
-
-const linkClass =
-  "rounded px-1 py-0.5 text-[color:var(--muted)] transition hover:text-[color:var(--foreground)] focus-visible:text-[color:var(--foreground)] focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--background)]";
-
 export function Header({ site: siteProp }: Props = {}) {
   const site = siteProp ?? SITE;
   const avatarUrl = site.logoUrl ?? "https://unavatar.io/x/CodeByChai";
@@ -69,13 +60,6 @@ export function Header({ site: siteProp }: Props = {}) {
 
         {/* Desktop nav */}
         <div className="hidden items-center gap-4 md:flex">
-          <div className="flex gap-6">
-            {navLinks.map(({ href, label }) => (
-              <Link key={href} href={href} className={linkClass}>
-                {label}
-              </Link>
-            ))}
-          </div>
           <div className="flex items-center gap-2">
             <Link
               href="https://instagram.com/mrf.living"
@@ -149,16 +133,6 @@ export function Header({ site: siteProp }: Props = {}) {
         style={{ borderColor: "var(--border)" }}
       >
         <div className="flex flex-col gap-1 px-4 py-3">
-          {navLinks.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`${linkClass} py-2`}
-              onClick={closeMenu}
-            >
-              {label}
-            </Link>
-          ))}
           <div className="flex items-center gap-3 pt-2 pb-1">
             <Link
               href="https://instagram.com/mrf.living"
