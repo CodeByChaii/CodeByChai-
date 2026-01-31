@@ -3,10 +3,29 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import type { Project } from "@/data/projects";
 import { projects as staticProjects, projectHasLinks } from "@/data/projects";
 import { SuggestionForm } from "./SuggestionForm";
+import { getRatings, getUserRating, submitRating, removeRating } from "@/app/actions/ratings";
+
+// Generate a simple browser fingerprint
+function getBrowserFingerprint() {
+  if (typeof window === "undefined") return "";
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (ctx) {
+    ctx.textBaseline = "top";
+    ctx.font = "14px 'Arial'";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = "#f60";
+    ctx.fillRect(125, 1, 62, 20);
+    ctx.fillStyle = "#069";
+    ctx.fillText("fingerprint", 2, 15);
+  }
+  const fingerprint = canvas.toDataURL();
+  return fingerprint.slice(-50); // Use last 50 chars as fingerprint
+}
 
 const container = {
   hidden: { opacity: 0 },
@@ -24,8 +43,46 @@ const item = {
 function ProjectCard({ p }: { p: Project }) {
   const hasLinks = projectHasLinks(p);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const [feedback, setFeedback] = useState<"up" | "down" | null>(null);
+  const [userRating, setUserRating] = useState<"up" | "down" | null>(null);
+  const [ratings, setRatings] = useState({ up: 0, down: 0 });
+  const [fingerprint, setFingerprint] = useState("");
   const logo = useMemo(() => p.logoUrl || p.thumbnail || null, [p.logoUrl, p.thumbnail]);
+
+  useEffect(() => {
+    const fp = getBrowserFingerprint();
+    setFingerprint(fp);
+
+    // Load ratings and user's previous rating
+    const loadRatings = async () => {
+      const [ratingsData, userRatingData] = await Promise.all([
+        getRatings(p.id),
+        getUserRating(p.id, fp),
+      ]);
+      setRatings(ratingsData);
+      setUserRating(userRatingData);
+    };
+
+    loadRatings();
+  }, [p.id]);
+
+  const handleRating = async (rating: "up" | "down") => {
+    if (!fingerprint) return;
+
+    // Toggle off if clicking same rating
+    if (userRating === rating) {
+      await removeRating(p.id, fingerprint);
+      setUserRating(null);
+      // Refresh ratings
+      const newRatings = await getRatings(p.id);
+      setRatings(newRatings);
+    } else {
+      await submitRating(p.id, rating, fingerprint);
+      setUserRating(rating);
+      // Refresh ratings
+      const newRatings = await getRatings(p.id);
+      setRatings(newRatings);
+    }
+  };
 
   const onMove = (e: React.MouseEvent<HTMLElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -230,42 +287,42 @@ function ProjectCard({ p }: { p: Project }) {
             )}
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <span className="text-sm" style={{ color: "var(--muted)" }}>
-              Was this useful?
+          <div className="flex items-center justify-between border-t pt-3" style={{ borderColor: "var(--border)" }}>
+            <span className="text-xs font-medium uppercase tracking-wide" style={{ color: "var(--muted)" }}>
+              Rate this
             </span>
             <div className="flex gap-2">
               <motion.button
                 type="button"
-                onClick={() => setFeedback(feedback === "up" ? null : "up")}
-                className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold transition"
+                onClick={() => handleRating("up")}
+                className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition"
                 style={{
-                  borderColor: feedback === "up" ? "var(--accent)" : "var(--border)",
-                  color: feedback === "up" ? "var(--accent)" : "var(--foreground)",
-                  backgroundColor: feedback === "up" ? "var(--accent-soft)" : "var(--surface)",
+                  borderColor: userRating === "up" ? "var(--accent)" : "var(--border)",
+                  color: userRating === "up" ? "var(--accent)" : "var(--foreground)",
+                  backgroundColor: userRating === "up" ? "var(--accent-soft)" : "var(--surface)",
                 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                aria-pressed={feedback === "up"}
+                aria-pressed={userRating === "up"}
               >
                 <span aria-hidden>👍</span>
-                Up
+                <span className="font-mono text-xs">{ratings.up}</span>
               </motion.button>
               <motion.button
                 type="button"
-                onClick={() => setFeedback(feedback === "down" ? null : "down")}
-                className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold transition"
+                onClick={() => handleRating("down")}
+                className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition"
                 style={{
-                  borderColor: feedback === "down" ? "var(--accent)" : "var(--border)",
-                  color: feedback === "down" ? "var(--accent)" : "var(--foreground)",
-                  backgroundColor: feedback === "down" ? "var(--accent-soft)" : "var(--surface)",
+                  borderColor: userRating === "down" ? "var(--accent)" : "var(--border)",
+                  color: userRating === "down" ? "var(--accent)" : "var(--foreground)",
+                  backgroundColor: userRating === "down" ? "var(--accent-soft)" : "var(--surface)",
                 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                aria-pressed={feedback === "down"}
+                aria-pressed={userRating === "down"}
               >
                 <span aria-hidden>👎</span>
-                Down
+                <span className="font-mono text-xs">{ratings.down}</span>
               </motion.button>
             </div>
           </div>

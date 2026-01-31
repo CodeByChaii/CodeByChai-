@@ -6,7 +6,7 @@ export { projectHasLinks } from "./types";
 export const projects: Project[] = [
   {
     id: "screenrec-live",
-    name: "CodeByChai | Record",
+    name: "Record",
     description:
       "Minimal screen capture tool with instant in-browser recording, inline preview, and WebM downloads. Try it live in your browser.",
     highlights: [
@@ -14,10 +14,9 @@ export const projects: Project[] = [
       "Nothing online — local save",
       "Timelapse feature",
     ],
-    buildNote: "Built in-browser with MediaRecorder for zero-cloud capture, with desktop zip for offline recording.",
+    buildNote: "Built in-browser with MediaRecorder for zero-cloud capture and instant playback.",
     tech: ["Web", "MediaRecorder", "TypeScript"],
     webUrl: "/projects/screenrec",
-    downloadUrl: "https://codebychai.com/downloads/screenrec.zip",
     stack: "Capture",
   },
   {
