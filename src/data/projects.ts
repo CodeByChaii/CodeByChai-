@@ -22,14 +22,15 @@ export const projects: Project[] = [
   {
     id: "x-auto-poster",
     name: "X Auto Poster",
-    description: "Coming soon — automated posting for X (Twitter).",
+    description: "AI-powered tweet generation for crypto and coding content. Generate engaging posts with OpenAI.",
     highlights: [
-      "Schedule posts",
-      "Auto-publish threads",
-      "Analytics dashboard",
+      "AI content generation",
+      "Crypto & coding topics",
+      "Copy or post directly to X",
     ],
-    buildNote: "Building with X API v2, Next.js, and Supabase for scheduled posting and analytics.",
-    tech: ["Next.js", "X API", "TypeScript"],
+    buildNote: "Built with OpenAI API, Next.js, and X API integration for automated social media content.",
+    tech: ["Next.js", "OpenAI", "TypeScript"],
+    webUrl: "/x-auto-poster",
     stack: "Social",
   },
   {

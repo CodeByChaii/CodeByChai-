@@ -68,19 +68,39 @@ function ProjectCard({ p }: { p: Project }) {
   const handleRating = async (rating: "up" | "down") => {
     if (!fingerprint) return;
 
-    // Toggle off if clicking same rating
-    if (userRating === rating) {
-      await removeRating(p.id, fingerprint);
-      setUserRating(null);
-      // Refresh ratings
+    try {
+      // Toggle off if clicking same rating
+      if (userRating === rating) {
+        // Optimistically update UI
+        setUserRating(null);
+        setRatings(prev => ({
+          ...prev,
+          [rating]: Math.max(0, prev[rating] - 1)
+        }));
+        
+        await removeRating(p.id, fingerprint);
+      } else {
+        // Optimistically update UI
+        const oldRating = userRating;
+        setUserRating(rating);
+        setRatings(prev => ({
+          up: rating === "up" ? prev.up + 1 : (oldRating === "up" ? prev.up - 1 : prev.up),
+          down: rating === "down" ? prev.down + 1 : (oldRating === "down" ? prev.down - 1 : prev.down),
+        }));
+        
+        await submitRating(p.id, rating, fingerprint);
+      }
+      
+      // Refresh to get accurate count from server
       const newRatings = await getRatings(p.id);
       setRatings(newRatings);
-    } else {
-      await submitRating(p.id, rating, fingerprint);
-      setUserRating(rating);
-      // Refresh ratings
+    } catch (error) {
+      console.error("Error handling rating:", error);
+      // Reload ratings on error
       const newRatings = await getRatings(p.id);
       setRatings(newRatings);
+      const userRatingData = await getUserRating(p.id, fingerprint);
+      setUserRating(userRatingData);
     }
   };
 
