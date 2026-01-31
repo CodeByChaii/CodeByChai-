@@ -91,7 +91,7 @@ export function HeroSection({ hero: heroProp, site: siteProp }: Props = {}) {
               <div className="h-3 w-3 rounded-full" style={{ backgroundColor: "#ffbd2e" }} />
               <div className="h-3 w-3 rounded-full" style={{ backgroundColor: "#27c93f" }} />
             </div>
-            <span className="ml-2 text-sm font-mono" style={{ color: "var(--muted)" }}>portfolio.tsx</span>
+            <span className="ml-2 text-sm font-mono" style={{ color: "var(--muted)" }}>screen-recorder.ts</span>
           </div>
           
           {/* Code editor content */}
@@ -101,9 +101,10 @@ export function HeroSection({ hero: heroProp, site: siteProp }: Props = {}) {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, delay: 0.5 }}
             >
-              <span style={{ color: "#c678dd" }}>const</span>{" "}
-              <span style={{ color: "#e06c75" }}>project</span>{" "}
-              <span style={{ color: "#abb2bf" }}>=</span>{" "}
+              <span style={{ color: "#c678dd" }}>async</span>{" "}
+              <span style={{ color: "#c678dd" }}>function</span>{" "}
+              <span style={{ color: "#61afef" }}>startRecording</span>
+              <span style={{ color: "#abb2bf" }}>()</span>{" "}
               <span style={{ color: "#abb2bf" }}>{"{"}</span>
             </motion.div>
             <motion.div
@@ -112,35 +113,41 @@ export function HeroSection({ hero: heroProp, site: siteProp }: Props = {}) {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, delay: 0.7 }}
             >
-              <span style={{ color: "#e06c75" }}>name</span>
-              <span style={{ color: "#abb2bf" }}>:</span>{" "}
-              <span style={{ color: "#98c379" }}>&quot;CodeByChai&quot;</span>
-              <span style={{ color: "#abb2bf" }}>,</span>
+              <span style={{ color: "#c678dd" }}>const</span>{" "}
+              <span style={{ color: "#e06c75" }}>stream</span>{" "}
+              <span style={{ color: "#56b6c2" }}>=</span>{" "}
+              <span style={{ color: "#c678dd" }}>await</span>{" "}
+              <span style={{ color: "#e5c07b" }}>navigator</span>
+              <span style={{ color: "#abb2bf" }}>.</span>
+              <span style={{ color: "#e5c07b" }}>mediaDevices</span>
             </motion.div>
             <motion.div
-              className="pl-4"
+              className="pl-8"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, delay: 0.9 }}
             >
-              <span style={{ color: "#e06c75" }}>stack</span>
-              <span style={{ color: "#abb2bf" }}>:</span>{" "}
-              <span style={{ color: "#abb2bf" }}>[</span>
-              <span style={{ color: "#98c379" }}>&quot;Motion&quot;</span>
-              <span style={{ color: "#abb2bf" }}>,</span>{" "}
-              <span style={{ color: "#98c379" }}>&quot;Remotion&quot;</span>
-              <span style={{ color: "#abb2bf" }}>],</span>
+              <span style={{ color: "#abb2bf" }}>.</span>
+              <span style={{ color: "#61afef" }}>getDisplayMedia</span>
+              <span style={{ color: "#abb2bf" }}>({"{ "}video</span>
+              <span style={{ color: "#56b6c2" }}>:</span>{" "}
+              <span style={{ color: "#d19a66" }}>true</span>{" "}
+              <span style={{ color: "#abb2bf" }}>{"});"}</span>
             </motion.div>
             <motion.div
-              className="pl-4"
+              className="pl-4 mt-2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, delay: 1.1 }}
             >
-              <span style={{ color: "#e06c75" }}>focus</span>
-              <span style={{ color: "#abb2bf" }}>:</span>{" "}
-              <span style={{ color: "#98c379" }}>&quot;Small builds&quot;</span>
-              <span style={{ color: "#abb2bf" }}>,</span>
+              <span style={{ color: "#c678dd" }}>const</span>{" "}
+              <span style={{ color: "#e06c75" }}>recorder</span>{" "}
+              <span style={{ color: "#56b6c2" }}>=</span>{" "}
+              <span style={{ color: "#c678dd" }}>new</span>{" "}
+              <span style={{ color: "#e5c07b" }}>MediaRecorder</span>
+              <span style={{ color: "#abb2bf" }}>(</span>
+              <span style={{ color: "#e06c75" }}>stream</span>
+              <span style={{ color: "#abb2bf" }}>);</span>
             </motion.div>
             <motion.div
               className="pl-4"
@@ -148,9 +155,10 @@ export function HeroSection({ hero: heroProp, site: siteProp }: Props = {}) {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, delay: 1.3 }}
             >
-              <span style={{ color: "#e06c75" }}>vibe</span>
-              <span style={{ color: "#abb2bf" }}>:</span>{" "}
-              <span style={{ color: "#98c379" }}>&quot;Playful experiments&quot;</span>
+              <span style={{ color: "#e06c75" }}>recorder</span>
+              <span style={{ color: "#abb2bf" }}>.</span>
+              <span style={{ color: "#61afef" }}>start</span>
+              <span style={{ color: "#abb2bf" }}>();</span>
             </motion.div>
             <motion.div
               initial={{ opacity: 0 }}
@@ -158,7 +166,6 @@ export function HeroSection({ hero: heroProp, site: siteProp }: Props = {}) {
               transition={{ duration: 0.3, delay: 1.5 }}
             >
               <span style={{ color: "#abb2bf" }}>{"}"}</span>
-              <span style={{ color: "#abb2bf" }}>;</span>
             </motion.div>
             <motion.div
               className="mt-4"
@@ -166,7 +173,7 @@ export function HeroSection({ hero: heroProp, site: siteProp }: Props = {}) {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, delay: 1.7 }}
             >
-              <span style={{ color: "#5c6370" }}>// Building in public...</span>
+              <span style={{ color: "#5c6370" }}>// Recording screen...</span>
               <motion.span
                 animate={{ opacity: [1, 0, 1] }}
                 transition={{ duration: 0.8, repeat: Infinity }}
