@@ -143,97 +143,20 @@ export function HeroSection({ hero: heroProp, site: siteProp }: Props = {}) {
               <div className="h-3 w-3 rounded-full" style={{ backgroundColor: "#ffbd2e" }} />
               <div className="h-3 w-3 rounded-full" style={{ backgroundColor: "#27c93f" }} />
             </div>
-            <span className="ml-2 text-sm font-mono" style={{ color: "var(--muted)" }}>screen-recorder.ts</span>
+            <span className="ml-2 text-sm font-mono" style={{ color: "var(--muted)" }}>production.ts</span>
           </div>
           
-          {/* Code editor content */}
-          <div className="p-4 font-mono text-sm leading-relaxed">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, delay: 0.5 }}
-            >
-              <span style={{ color: "#c678dd" }}>async</span>{" "}
-              <span style={{ color: "#c678dd" }}>function</span>{" "}
-              <span style={{ color: "#61afef" }}>startRecording</span>
-              <span style={{ color: "#abb2bf" }}>()</span>{" "}
-              <span style={{ color: "#abb2bf" }}>{"{"}</span>
-            </motion.div>
-            <motion.div
-              className="pl-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, delay: 0.7 }}
-            >
-              <span style={{ color: "#c678dd" }}>const</span>{" "}
-              <span style={{ color: "#e06c75" }}>stream</span>{" "}
-              <span style={{ color: "#56b6c2" }}>=</span>{" "}
-              <span style={{ color: "#c678dd" }}>await</span>{" "}
-              <span style={{ color: "#e5c07b" }}>navigator</span>
-              <span style={{ color: "#abb2bf" }}>.</span>
-              <span style={{ color: "#e5c07b" }}>mediaDevices</span>
-            </motion.div>
-            <motion.div
-              className="pl-8"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, delay: 0.9 }}
-            >
-              <span style={{ color: "#abb2bf" }}>.</span>
-              <span style={{ color: "#61afef" }}>getDisplayMedia</span>
-              <span style={{ color: "#abb2bf" }}>({"{ "}video</span>
-              <span style={{ color: "#56b6c2" }}>:</span>{" "}
-              <span style={{ color: "#d19a66" }}>true</span>{" "}
-              <span style={{ color: "#abb2bf" }}>{"});"}</span>
-            </motion.div>
-            <motion.div
-              className="pl-4 mt-2"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, delay: 1.1 }}
-            >
-              <span style={{ color: "#c678dd" }}>const</span>{" "}
-              <span style={{ color: "#e06c75" }}>recorder</span>{" "}
-              <span style={{ color: "#56b6c2" }}>=</span>{" "}
-              <span style={{ color: "#c678dd" }}>new</span>{" "}
-              <span style={{ color: "#e5c07b" }}>MediaRecorder</span>
-              <span style={{ color: "#abb2bf" }}>(</span>
-              <span style={{ color: "#e06c75" }}>stream</span>
-              <span style={{ color: "#abb2bf" }}>);</span>
-            </motion.div>
-            <motion.div
-              className="pl-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, delay: 1.3 }}
-            >
-              <span style={{ color: "#e06c75" }}>recorder</span>
-              <span style={{ color: "#abb2bf" }}>.</span>
-              <span style={{ color: "#61afef" }}>start</span>
-              <span style={{ color: "#abb2bf" }}>();</span>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, delay: 1.5 }}
-            >
-              <span style={{ color: "#abb2bf" }}>{"}"}</span>
-            </motion.div>
-            <motion.div
-              className="mt-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, delay: 1.7 }}
-            >
-              <span style={{ color: "#5c6370" }}>// Recording screen...</span>
-              <motion.span
-                animate={{ opacity: [1, 0, 1] }}
-                transition={{ duration: 0.8, repeat: Infinity }}
-                style={{ color: "var(--accent)" }}
-              >
-                ▮
-              </motion.span>
-            </motion.div>
+          {/* Code editor content with typing animation */}
+          <div className="p-4 min-h-[200px]">
+            {CODE_LINES.map((line, index) => (
+              <TypingCodeLine
+                key={index}
+                text={line.text}
+                color={line.color}
+                delay={line.delay}
+                startTyping={startTyping}
+              />
+            ))}
           </div>
         </motion.div>
       </div>
