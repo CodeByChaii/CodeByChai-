@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import React, { useMemo, useState } from "react";
 import type { Project } from "@/data/projects";
 import { projects as staticProjects, projectHasLinks } from "@/data/projects";
+import { SuggestionForm } from "./SuggestionForm";
 
 const container = {
   hidden: { opacity: 0 },
@@ -34,6 +35,68 @@ function ProjectCard({ p }: { p: Project }) {
   };
 
   const resetTilt = () => setTilt({ x: 0, y: 0 });
+
+  // Special handling for suggestion card
+  if (p.id === "suggest-project") {
+    return (
+      <motion.article
+        variants={item}
+        className="rounded-2xl overflow-hidden transition shadow-lg border h-full"
+        style={{
+          backgroundColor: "var(--card)",
+          borderColor: "var(--accent)",
+          borderWidth: 2,
+          boxShadow: "var(--shadow)",
+          transform: `perspective(1100px) rotateX(${tilt.y}deg) rotateY(${tilt.x}deg)`,
+        }}
+        whileHover={{ y: -6, transition: { duration: 0.2 } }}
+        onMouseMove={onMove}
+        onMouseLeave={resetTilt}
+      >
+        <div className="p-6 flex flex-col gap-4 h-full">
+          <div className="flex items-center gap-3">
+            <div
+              className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border"
+              style={{ borderColor: "var(--accent)", backgroundColor: "var(--accent-soft)", color: "var(--accent)" }}
+            >
+              <span className="text-2xl">💡</span>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold" style={{ color: "var(--foreground)" }}>
+                {p.name}
+              </h3>
+              {p.stack && (
+                <span
+                  className="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold"
+                  style={{ backgroundColor: "var(--surface)", color: "var(--muted)", border: `1px solid var(--border)` }}
+                >
+                  {p.stack}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <p style={{ color: "var(--muted)" }}>{p.description}</p>
+
+          <div className="flex flex-wrap gap-2">
+            {p.tech.map((t) => (
+              <span
+                key={t}
+                className="rounded-full px-3 py-1 text-xs font-semibold"
+                style={{ backgroundColor: "var(--accent-soft)", color: "var(--accent)" }}
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+
+          <div className="mt-auto">
+            <SuggestionForm />
+          </div>
+        </div>
+      </motion.article>
+    );
+  }
 
   return (
     <motion.article
