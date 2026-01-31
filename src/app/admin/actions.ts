@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { Buffer } from "node:buffer";
 import { updateSiteSetting } from "@/lib/db/site-settings";
 import {
   createProject as createProjectDb,
@@ -52,6 +53,11 @@ export async function createProject(formData: FormData) {
     if (url) await updateProjectDb(id, { thumbnail_url: url });
   }
 
+   // Auto-generate logo in background if no thumbnail provided
+  if (!thumbFile?.size) {
+    await generateProjectLogo({ id, name, stack });
+  }
+
   // Handle ZIP upload for download
   const zipFile = formData.get("zip") as File | null;
   if (zipFile?.size) {
@@ -64,6 +70,41 @@ export async function createProject(formData: FormData) {
   revalidatePath("/admin");
   revalidatePath("/admin/projects");
   return { ok: true, id };
+}
+
+async function generateProjectLogo({
+  id,
+  name,
+  stack,
+}: {
+  id: string;
+  name: string;
+  stack?: string | null;
+}) {
+  try {
+    if (!process.env.OPENAI_API_KEY) return;
+    const prompt = `Modern minimal logo with a hand-drawn iPad-style cartoon mascot, vibrant colors, clean background. Project: ${name}${stack ? `, stack: ${stack}` : ""}. No text, centered character.`;
+    const resp = await fetch("https://api.openai.com/v1/images/generations", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({ model: "gpt-image-1", prompt, size: "1024x1024", style: "vivid", user: `project-${id}` }),
+    });
+    if (!resp.ok) return;
+    const json = (await resp.json()) as { data?: { url?: string }[] };
+    const url = json?.data?.[0]?.url;
+    if (!url) return;
+    const imgResp = await fetch(url);
+    if (!imgResp.ok) return;
+    const buf = Buffer.from(await imgResp.arrayBuffer());
+    const file = new File([buf], "logo.png", { type: "image/png" });
+    const upload = await uploadFile(`projects/${id}/logo.png`, file);
+    if (upload.url) await updateProjectDb(id, { thumbnail_url: upload.url });
+  } catch (err) {
+    console.error("logo generation failed", err);
+  }
 }
 
 export async function updateProjectAction(id: string, formData: FormData) {

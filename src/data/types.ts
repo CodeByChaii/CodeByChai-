@@ -3,6 +3,10 @@ export type Project = {
   name: string;
   description: string;
   tech: string[];
+  /** Optional quick bullets to surface key points */
+  highlights?: string[];
+  /** Short sentence on how/why it was built */
+  buildNote?: string;
   /** Use on web (live demo URL) */
   webUrl?: string;
   /** Download (APK, ZIP, or release URL) */
@@ -11,6 +15,8 @@ export type Project = {
   repoUrl?: string;
   /** Optional thumbnail image URL (relative or absolute) */
   thumbnail?: string;
+  /** Auto-generated logo (stored as thumbnail) */
+  logoUrl?: string;
   /** Flutter, Remotion, etc. */
   stack?: string;
 };

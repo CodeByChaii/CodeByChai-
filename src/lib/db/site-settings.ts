@@ -10,6 +10,8 @@ export type SiteSettingsMap = {
     url: string;
     github: string;
     twitter: string;
+    logoUrl?: string;
+    photoUrl?: string;
   };
   media?: { bannerImageUrl: string | null; heroVideoUrl: string | null };
 };
@@ -17,17 +19,19 @@ export type SiteSettingsMap = {
 const defaults: SiteSettingsMap = {
   hero: {
     title: "CodeByChai",
-    subtitle: "Atthachai · Vibe coded projects",
+    subtitle: "Atthachai · Playful builds",
   },
   site: {
     name: "CodeByChai",
     fullName: "Atthachai",
-    tagline: "Atthachai · Vibe coded projects",
+    tagline: "Atthachai · Playful builds",
     heroDescription:
       "Coding projects built for fun and learning. Try them on the web or download and run locally.",
     url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://codebychai.dev",
     github: "https://github.com/CodeByChai",
-    twitter: "https://twitter.com/CodeByChai",
+    twitter: "https://x.com/CodeByChai",
+    logoUrl: "https://unavatar.io/x/CodeByChai",
+    photoUrl: "https://unavatar.io/x/CodeByChai",
   },
   media: { bannerImageUrl: null, heroVideoUrl: null },
 };

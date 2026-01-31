@@ -1,23 +1,115 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 :root {
-  --background: #0a0a0f;
-  --foreground: #e4e4e7;
-  --accent: #6366f1;
-  --accent-muted: #818cf8;
+  --background: #050816;
+  --surface: #0c1226;
+  --card: #0f152c;
+  --border: #1f2842;
+  --foreground: #f8fafc;
+  --muted: #cbd5e1;
+  --muted-strong: #e2e8f0;
+  --accent: #ff7bd7;
+  --accent-strong: #7dd3fc;
+  --accent-foreground: #0b1021;
+  --accent-soft: rgba(255, 123, 215, 0.14);
+  --gradient-start: #0d0b1f;
+  --gradient-mid: #1d1140;
+  --gradient-end: #0b1b2f;
+  --orb-pink: rgba(255, 123, 215, 0.18);
+  --orb-violet: rgba(167, 139, 250, 0.16);
+  --orb-aqua: rgba(56, 189, 248, 0.14);
+  --glass: rgba(15, 21, 44, 0.75);
+  --shadow: 0 25px 80px rgba(0, 0, 0, 0.45);
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --background: #f8fafc;
+  --surface: #f1f5f9;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --foreground: #0f172a;
+  --muted: #475569;
+  --muted-strong: #1f2937;
+  --accent: #d946ef;
+  --accent-strong: #0ea5e9;
+  --accent-foreground: #0f172a;
+  --accent-soft: rgba(217, 70, 239, 0.12);
+  --gradient-start: #fff1f2;
+  --gradient-mid: #e0f2fe;
+  --gradient-end: #f3e8ff;
+  --orb-pink: rgba(217, 70, 239, 0.18);
+  --orb-violet: rgba(168, 85, 247, 0.16);
+  --orb-aqua: rgba(14, 165, 233, 0.14);
+  --glass: rgba(255, 255, 255, 0.82);
+  --shadow: 0 20px 60px rgba(15, 23, 42, 0.16);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --background: #f8fafc;
+    --surface: #f1f5f9;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --foreground: #0f172a;
+    --muted: #475569;
+    --muted-strong: #1f2937;
+    --accent: #d946ef;
+    --accent-strong: #0ea5e9;
+    --accent-foreground: #0f172a;
+    --accent-soft: rgba(217, 70, 239, 0.12);
+    --gradient-start: #fff1f2;
+    --gradient-mid: #e0f2fe;
+    --gradient-end: #f3e8ff;
+    --orb-pink: rgba(217, 70, 239, 0.18);
+    --orb-violet: rgba(168, 85, 247, 0.16);
+    --orb-aqua: rgba(14, 165, 233, 0.14);
+    --glass: rgba(255, 255, 255, 0.82);
+    --shadow: 0 20px 60px rgba(15, 23, 42, 0.16);
+    color-scheme: light;
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-display);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+p {
+  color: var(--muted);
 }
 
 /* Focus visible for accessibility (keyboard / reduced motion) */
@@ -33,12 +125,5 @@ button:focus-visible {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --background: #fafafa;
-    --foreground: #18181b;
   }
 }

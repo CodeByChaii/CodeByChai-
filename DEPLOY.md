@@ -1,10 +1,14 @@
-# Hosting codebychai.com
+# Get your site live at codebychai.com
 
 Your portfolio is a **Next.js app** (Node.js). Hostinger’s “Create your website” / shared hosting is built for PHP sites and doesn’t run Next.js well. Use one of these approaches.
 
 ---
 
-## Option 1: Vercel + Hostinger domain (recommended)
+**Quick path to codebychai.com:** (1) Push to GitHub (repo **CodeByChai**, owner **codebychaii**) → (2) Deploy on [vercel.com](https://vercel.com) (import CodeByChai, add env vars from `.env.local`) → (3) Vercel **Settings → Domains** → add codebychai.com + www → (4) Hostinger **Domains → codebychai.com → Manage/DNS** → add the A and CNAME records Vercel shows. After DNS propagates, site is live at **https://codebychai.com**.
+
+---
+
+## Option 1: Vercel + Hostinger domain (detailed)
 
 **Vercel** runs Next.js natively and has a free tier. You keep your domain at Hostinger and point it to Vercel.
 

@@ -10,6 +10,7 @@ type ProjectRow = {
   download_url: string | null;
   repo_url: string | null;
   thumbnail_url: string | null;
+  logo_url?: string | null;
   stack: string | null;
   sort_order: number;
 };
@@ -24,6 +25,7 @@ function rowToProject(r: ProjectRow): Project {
     downloadUrl: r.download_url ?? undefined,
     repoUrl: r.repo_url ?? undefined,
     thumbnail: r.thumbnail_url ?? undefined,
+    logoUrl: (r as ProjectRow).logo_url ?? undefined,
     stack: r.stack ?? undefined,
   };
 }

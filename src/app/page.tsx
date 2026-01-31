@@ -13,24 +13,33 @@ export default async function Home() {
   ]);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-zinc-200">
+    <div className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)] transition-colors duration-300">
       <a
         href="#main-content"
-        className="absolute -left-[9999px] top-4 z-[100] rounded bg-indigo-600 px-4 py-2 text-white focus:fixed focus:left-4 focus:top-4"
+        className="absolute -left-[9999px] top-4 z-[100] rounded bg-[color:var(--accent)] px-4 py-2 text-[color:var(--accent-foreground)] focus:fixed focus:left-4 focus:top-4"
       >
         Skip to main content
       </a>
       <Header site={settings.site} />
       <main id="main-content" aria-label="Main content">
         <HeroSection hero={settings.hero} site={settings.site} />
-        <AboutSection site={settings.site} />
         <ProjectsSection projects={projects} />
+        <AboutSection site={settings.site} />
         <ContactSection site={settings.site} />
       </main>
-      <footer className="border-t border-zinc-800 py-6 text-center text-sm text-zinc-500">
+      <footer
+        className="border-t py-6 text-center text-sm"
+        style={{ borderColor: "var(--border)", color: "var(--muted)" }}
+      >
         © {new Date().getFullYear()} {settings.site?.fullName ?? "Atthachai"} ({settings.site?.name ?? "CodeByChai"})
         {" · "}
-        <a href="/admin" className="text-zinc-500 hover:text-zinc-400 underline">Admin</a>
+        <a
+          href="/admin"
+          className="underline transition hover:text-[color:var(--foreground)]"
+          style={{ color: "var(--muted)" }}
+        >
+          Admin
+        </a>
       </footer>
     </div>
   );

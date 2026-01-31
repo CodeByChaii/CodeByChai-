@@ -36,10 +36,20 @@ export const HeroComposition: React.FC<{ title: string; subtitle: string }> = ({
     { extrapolateRight: "clamp" }
   );
 
+  const palette = {
+    bg: "linear-gradient(125deg, #0d0b1f 0%, #1d1140 52%, #0b1b2f 100%)",
+    orbPink: "radial-gradient(circle, rgba(255, 123, 215, 0.25) 0%, transparent 70%)",
+    orbViolet: "radial-gradient(circle, rgba(167, 139, 250, 0.22) 0%, transparent 70%)",
+    orbAqua: "radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, transparent 70%)",
+    title: "#f8fafc",
+    subtitle: "#c7d2fe",
+    glow: "0 0 40px rgba(255, 123, 215, 0.5)",
+  } as const;
+
   return (
     <AbsoluteFill
       style={{
-        background: "linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #0d0d1a 100%)",
+        background: palette.bg,
         justifyContent: "center",
         alignItems: "center",
       }}
@@ -61,7 +71,7 @@ export const HeroComposition: React.FC<{ title: string; subtitle: string }> = ({
             width: 120,
             height: 120,
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%)",
+            background: palette.orbPink,
             filter: "blur(20px)",
           }}
         />
@@ -73,7 +83,7 @@ export const HeroComposition: React.FC<{ title: string; subtitle: string }> = ({
             width: 160,
             height: 160,
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%)",
+            background: palette.orbViolet,
             filter: "blur(24px)",
           }}
         />
@@ -85,7 +95,7 @@ export const HeroComposition: React.FC<{ title: string; subtitle: string }> = ({
             width: 80,
             height: 80,
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)",
+            background: palette.orbAqua,
             filter: "blur(16px)",
             transform: `translate(${floatX}px, ${floatY}px)`,
           }}
@@ -104,9 +114,9 @@ export const HeroComposition: React.FC<{ title: string; subtitle: string }> = ({
           style={{
             fontSize: 72,
             fontWeight: 800,
-            color: "#fff",
+            color: palette.title,
             margin: 0,
-            textShadow: "0 0 40px rgba(99, 102, 241, 0.5)",
+            textShadow: palette.glow,
           }}
         >
           {title}
@@ -114,7 +124,7 @@ export const HeroComposition: React.FC<{ title: string; subtitle: string }> = ({
         <p
           style={{
             fontSize: 28,
-            color: "#a5b4fc",
+            color: palette.subtitle,
             marginTop: 16,
             opacity: subtitleOpacity,
           }}
