@@ -41,19 +41,14 @@ export async function getUserRating(projectId: string, fingerprint: string) {
 export async function submitRating(projectId: string, rating: "up" | "down", fingerprint: string) {
   const supabase = await createClient();
 
-  // Try to upsert (insert or update if exists)
+  // Insert a new rating each time (allow multiple votes)
   const { error } = await supabase
     .from("project_ratings")
-    .upsert(
-      {
-        project_id: projectId,
-        rating,
-        user_fingerprint: fingerprint,
-      },
-      {
-        onConflict: "project_id,user_fingerprint",
-      }
-    );
+    .insert({
+      project_id: projectId,
+      rating,
+      user_fingerprint: fingerprint,
+    });
 
   if (error) {
     console.error("Error submitting rating:", error);

@@ -85,8 +85,8 @@ Keep it under 240 characters. Make it scroll-stopping.`,
   return completion.choices[0].message.content?.trim() || "Failed to generate tweet";
 }
 
-async fuopenai = getOpenAIClient();
-  const nction generateCodingTweet(topic?: string) {
+async function generateCodingTweet(topic?: string) {
+  const openai = getOpenAIClient();
   const hook = HOOKS.coding[Math.floor(Math.random() * HOOKS.coding.length)];
   const topicPrompt = topic ? `Topic: ${topic}` : "Pick any relatable coding topic";
   

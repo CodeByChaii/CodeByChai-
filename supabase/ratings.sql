@@ -5,8 +5,7 @@ create table if not exists public.project_ratings (
   project_id text not null,
   rating text not null check (rating in ('up', 'down')),
   user_fingerprint text not null,
-  created_at timestamptz not null default now(),
-  unique(project_id, user_fingerprint)
+  created_at timestamptz not null default now()
 );
 
 -- RLS: allow anyone to read and insert ratings

@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "codebychai.com"
+        }
+      ],
+      "destination": "https://www.codebychai.com/:path*",
+      "permanent": true
+    }
+  ]
+}
