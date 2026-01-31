@@ -54,20 +54,21 @@ ${emailContent}
 View all in your Supabase dashboard: https://supabase.com/dashboard/project/rfgntpeqptlffzmkfshd/editor
 `;
 
-  // Send email using Resend (you'll need to install and configure)
-  // For now, we'll just log and mark as emailed
-  console.log("EMAIL TO SEND:", emailBody);
-
-  // TODO: Integrate with Resend or SendGrid
-  // Example with Resend:
-  // const { Resend } = require('resend');
-  // const resend = new Resend(process.env.RESEND_API_KEY);
-  // await resend.emails.send({
-  //   from: 'suggestions@codebychai.com',
-  //   to: 'your@email.com',
-  //   subject: `${suggestions.length} New Project Suggestions`,
-  //   text: emailBody,
-  // });
+  // Send email using Resend
+  try {
+    const { Resend } = await import('resend');
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    
+    await resend.emails.send({
+      from: 'CodeByChai <onboarding@resend.dev>',
+      to: 'codebychaii@gmail.com',
+      subject: `${suggestions.length} New Project Suggestion${suggestions.length > 1 ? 's' : ''}`,
+      text: emailBody,
+    });
+  } catch (emailError) {
+    console.error('Failed to send email:', emailError);
+    return NextResponse.json({ error: 'Failed to send email' }, { status: 500 });
+  }
 
   // Mark suggestions as emailed
   const ids = suggestions.map((s) => s.id);

@@ -8,7 +8,7 @@ export const projects: Project[] = [
     id: "screenrec-live",
     name: "CodeByChai | Record",
     description:
-      "Minimal screen capture tool with instant in-browser recording, inline preview, and WebM downloads. Desktop build included for offline use.",
+      "Minimal screen capture tool with instant in-browser recording, inline preview, and WebM downloads. Try it live in your browser.",
     highlights: [
       "Record any screen",
       "Nothing online — local save",

@@ -20,17 +20,21 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
 });
 
-const title = `${SITE.name} | ${SITE.fullName} — Portfolio`;
+const title = `${SITE.name} | Atthachai — Playful Web Projects & Experiments`;
 const description =
-  "Portfolio of playful builds by Atthachai (CodeByChai). Try or download coding projects on the web.";
+  "Portfolio by Atthachai (CodeByChai) — Interactive web apps, motion experiments, and browser-first tools you can try instantly. Built with React, Next.js, Motion, and Remotion.";
 
 export const metadata: Metadata = {
   title,
   description,
   metadataBase: new URL(SITE.url),
-  keywords: ["portfolio", "web development", "motion", "remotion", "react", "typescript", "next.js", "coding projects"],
+  keywords: ["portfolio", "web development", "motion", "remotion", "react", "typescript", "next.js", "coding projects", "screen recorder", "browser tools", "interactive demos"],
   authors: [{ name: SITE.fullName, url: SITE.url }],
   creator: SITE.fullName,
+  icons: {
+    icon: "https://unavatar.io/x/CodeByChai",
+    apple: "https://unavatar.io/x/CodeByChai",
+  },
   openGraph: {
     title,
     description,

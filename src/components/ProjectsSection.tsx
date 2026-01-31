@@ -202,7 +202,7 @@ function ProjectCard({ p }: { p: Project }) {
                   backgroundColor: "var(--surface)",
                 }}
               >
-                Download
+                Try Now
               </Link>
             )}
             {p.repoUrl && (
