@@ -33,7 +33,7 @@ export function SuggestionForm() {
         onClick={() => setIsOpen(true)}
         className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all"
         style={{
-          background: "linear-gradient(120deg, var(--accent) 0%, var(--accent-strong) 60%)",
+          background: "linear-gradient(120deg, #7dd3fc 0%, #a78bfa 60%)",
           color: "var(--accent-foreground)",
           boxShadow: "var(--shadow)",
         }}
@@ -135,7 +135,7 @@ export function SuggestionForm() {
           disabled={isSubmitting}
           className="w-full rounded-full px-4 py-2 text-sm font-semibold transition-all disabled:opacity-50"
           style={{
-            background: "linear-gradient(120deg, var(--accent) 0%, var(--accent-strong) 60%)",
+            background: "linear-gradient(120deg, #7dd3fc 0%, #a78bfa 60%)",
             color: "var(--accent-foreground)",
             boxShadow: "var(--shadow)",
           }}

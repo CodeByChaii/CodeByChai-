@@ -224,7 +224,7 @@ function ProjectCard({ p, fingerprint }: { p: Project; fingerprint: string }) {
                 href={p.webUrl}
                 className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition"
                 style={{
-                  background: "linear-gradient(120deg, var(--accent) 0%, var(--accent-strong) 60%)",
+                  background: "linear-gradient(120deg, #7dd3fc 0%, #a78bfa 60%)",
                   color: "var(--accent-foreground)",
                   boxShadow: "var(--shadow)",
                 }}

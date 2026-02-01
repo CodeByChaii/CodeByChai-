@@ -38,6 +38,7 @@ export const projects: Project[] = [
     webUrl: "/projects/screenrec",
     stack: "Capture",
     logoUrl: "https://unavatar.io/x/CodeByChai",
+    thumbnail: "/images/record-preview.svg",
   },
   {
     id: "x-auto-poster",
@@ -53,6 +54,7 @@ export const projects: Project[] = [
     webUrl: "/x-auto-poster",
     stack: "Social",
     logoUrl: "https://unavatar.io/x/CodeByChai",
+    thumbnail: "/images/x-auto-poster-preview.svg",
   },
   {
     id: "suggest-project",
