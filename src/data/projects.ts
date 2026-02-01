@@ -20,6 +20,8 @@ export const projects: Project[] = [
       "Built as a free, open-source alternative to Cursor and VS Code with comprehensive local AI capabilities.",
     tech: ["Electron", "React", "TypeScript", "Monaco Editor", "Python", "Ollama", "Webpack", "Zustand"],
     stack: "Desktop",
+    thumbnail: "/images/code-by-fang-preview.svg",
+    logoUrl: "https://unavatar.io/x/CodeByChai",
   },
   {
     id: "screenrec-live",

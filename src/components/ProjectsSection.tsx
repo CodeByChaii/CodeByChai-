@@ -116,6 +116,7 @@ function ProjectCard({ p, fingerprint }: { p: Project; fingerprint: string }) {
         borderColor: "var(--border)",
         borderWidth: 1,
         boxShadow: "var(--shadow)",
+        backgroundImage: "linear-gradient(160deg, rgba(255,255,255,0.03), rgba(255,255,255,0))",
         transform: `perspective(1100px) rotateX(${tilt.y}deg) rotateY(${tilt.x}deg)`,
       }}
       whileHover={{ y: -6, transition: { duration: 0.2 } }}
@@ -163,6 +164,18 @@ function ProjectCard({ p, fingerprint }: { p: Project; fingerprint: string }) {
           <p style={{ color: "var(--muted)" }}>
             {isExpanded ? p.description : getBriefDescription(p.description)}
           </p>
+        )}
+
+        {!isExpanded && p.thumbnail && (
+          <div
+            className="relative overflow-hidden rounded-xl border"
+            style={{ borderColor: "var(--border)", backgroundColor: "var(--surface)" }}
+          >
+            <div className="absolute inset-0" style={{ background: "linear-gradient(120deg, rgba(125,211,252,0.08), rgba(255,123,215,0.08))" }} />
+            <div className="relative aspect-video">
+              <Image src={p.thumbnail} alt={`${p.name} preview`} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
+            </div>
+          </div>
         )}
 
         {isExpanded && p.highlights && p.highlights.length > 0 && (

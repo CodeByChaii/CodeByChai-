@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "motion/react";
 import { HERO, SITE } from "@/data/site";
 import type { SiteSettingsMap } from "@/lib/db/site-settings";
@@ -53,6 +53,7 @@ export function HeroSection({ hero: heroProp, site: siteProp }: Props = {}) {
   const [lineIndex, setLineIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [displayedLines, setDisplayedLines] = useState<string[]>(Array(CODE_LINES.length).fill(""));
+  const codeScrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     // Start typing animation after component mounts
@@ -94,6 +95,12 @@ export function HeroSection({ hero: heroProp, site: siteProp }: Props = {}) {
 
     return () => clearTimeout(timer);
   }, [startTyping, lineIndex, charIndex]);
+
+  useEffect(() => {
+    const container = codeScrollRef.current;
+    if (!container) return;
+    container.scrollTop = container.scrollHeight;
+  }, [displayedLines, lineIndex]);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -187,7 +194,7 @@ export function HeroSection({ hero: heroProp, site: siteProp }: Props = {}) {
               <span className="ml-2 text-sm font-mono" style={{ color: "var(--muted)" }}>index.html</span>
             </div>
 
-            <div className="p-4 h-[280px] overflow-hidden">
+            <div ref={codeScrollRef} className="p-4 h-[280px] overflow-y-auto">
               {CODE_LINES.map((line, i) => {
                 const isActiveLine = startTyping && i === lineIndex;
                 const isLineComplete = displayedLines[i].length >= line.text.length;
