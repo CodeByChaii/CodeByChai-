@@ -12,19 +12,34 @@ type Props = {
 
 const stagger = 0.12;
 
-// Simple HTML/CSS/JS demo typing loop
+// Simple HTML/CSS/JS demo typing loop (longer + professional)
 const CODE_LINES = [
   { text: "<!DOCTYPE html>", color: "#c678dd" },
-  { text: "<html>", color: "#c678dd" },
+  { text: "<html lang=\"en\">", color: "#c678dd" },
   { text: "  <head>", color: "#c678dd" },
+  { text: "    <meta charset=\"UTF-8\" />", color: "#61afef" },
+  { text: "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />", color: "#61afef" },
+  { text: "    <title>Hello, World</title>", color: "#e5c07b" },
   { text: "    <style>", color: "#c678dd" },
-  { text: "      body { font-family: Arial; }", color: "#98c379" },
+  { text: "      :root { color-scheme: light dark; }", color: "#98c379" },
+  { text: "      body { font-family: system-ui, sans-serif; margin: 0; }", color: "#98c379" },
+  { text: "      .card { max-width: 560px; margin: 10vh auto; padding: 24px; }", color: "#98c379" },
+  { text: "      .title { font-size: 2rem; letter-spacing: -0.02em; }", color: "#98c379" },
+  { text: "      .muted { opacity: 0.7; }", color: "#98c379" },
   { text: "    </style>", color: "#c678dd" },
   { text: "  </head>", color: "#c678dd" },
   { text: "  <body>", color: "#c678dd" },
-  { text: "    <h1>Hello, World!</h1>", color: "#e5c07b" },
+  { text: "    <main class=\"card\">", color: "#c678dd" },
+  { text: "      <h1 class=\"title\">Hello, World!</h1>", color: "#e5c07b" },
+  { text: "      <p class=\"muted\">A clean starting point for modern UI.</p>", color: "#e5c07b" },
+  { text: "      <button id=\"helloBtn\">Say Hello</button>", color: "#e5c07b" },
+  { text: "    </main>", color: "#c678dd" },
   { text: "    <script>", color: "#c678dd" },
-  { text: "      console.log('Hello, World!');", color: "#61afef" },
+  { text: "      const btn = document.querySelector('#helloBtn');", color: "#61afef" },
+  { text: "      btn.addEventListener('click', () => {", color: "#61afef" },
+  { text: "        console.log('Hello, World!');", color: "#61afef" },
+  { text: "        btn.textContent = 'Hello again ✨';", color: "#61afef" },
+  { text: "      });", color: "#61afef" },
   { text: "    </script>", color: "#c678dd" },
   { text: "  </body>", color: "#c678dd" },
   { text: "</html>", color: "#c678dd" },
@@ -172,7 +187,7 @@ export function HeroSection({ hero: heroProp, site: siteProp }: Props = {}) {
               <span className="ml-2 text-sm font-mono" style={{ color: "var(--muted)" }}>index.html</span>
             </div>
 
-            <div className="p-4 min-h-[220px]">
+            <div className="p-4 h-[280px] overflow-hidden">
               {CODE_LINES.map((line, i) => {
                 const isActiveLine = startTyping && i === lineIndex;
                 const isLineComplete = displayedLines[i].length >= line.text.length;
