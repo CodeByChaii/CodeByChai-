@@ -160,23 +160,25 @@ function ProjectCard({ p, fingerprint }: { p: Project; fingerprint: string }) {
           </button>
         </div>
 
-        {p.description && (
-          <p style={{ color: "var(--muted)" }}>
-            {isExpanded ? p.description : getBriefDescription(p.description)}
-          </p>
-        )}
+        <div className="space-y-3">
+          {p.description && (
+            <p className="min-h-[64px]" style={{ color: "var(--muted)" }}>
+              {isExpanded ? p.description : getBriefDescription(p.description)}
+            </p>
+          )}
 
-        {!isExpanded && p.thumbnail && (
-          <div
-            className="relative overflow-hidden rounded-xl border"
-            style={{ borderColor: "var(--border)", backgroundColor: "var(--surface)" }}
-          >
-            <div className="absolute inset-0" style={{ background: "linear-gradient(120deg, rgba(125,211,252,0.08), rgba(255,123,215,0.08))" }} />
-            <div className="relative aspect-video">
-              <Image src={p.thumbnail} alt={`${p.name} preview`} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
+          {!isExpanded && p.thumbnail && (
+            <div
+              className="relative overflow-hidden rounded-xl border"
+              style={{ borderColor: "var(--border)", backgroundColor: "var(--surface)" }}
+            >
+              <div className="absolute inset-0" style={{ background: "linear-gradient(120deg, rgba(125,211,252,0.08), rgba(255,123,215,0.08))" }} />
+              <div className="relative aspect-video min-h-[140px]">
+                <Image src={p.thumbnail} alt={`${p.name} preview`} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {isExpanded && p.highlights && p.highlights.length > 0 && (
           <ul className="space-y-2 text-sm" style={{ color: "var(--foreground)" }}>

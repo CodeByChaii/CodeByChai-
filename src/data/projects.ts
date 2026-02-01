@@ -6,7 +6,7 @@ export { projectHasLinks } from "./types";
 export const projects: Project[] = [
   {
     id: "code-by-fang",
-    name: "Code By Fang",
+    name: "AI Super Team",
     description:
       "AI-powered code editor with local multi-agent AI. Features 6 AI modes (Agent, Ask, Plan, Photo, Video, WebSearch), Monaco editor, vision-to-code, and multimedia generation - all running 100% locally with no cloud dependencies.",
     highlights: [
@@ -21,7 +21,7 @@ export const projects: Project[] = [
     tech: ["Electron", "React", "TypeScript", "Monaco Editor", "Python", "Ollama", "Webpack", "Zustand"],
     stack: "Desktop",
     thumbnail: "/images/code-by-fang-preview.svg",
-    logoUrl: "https://unavatar.io/x/CodeByChai",
+    logoUrl: "/images/ai-super-team-logo.svg",
   },
   {
     id: "screenrec-live",
@@ -37,7 +37,7 @@ export const projects: Project[] = [
     tech: ["Web", "MediaRecorder", "TypeScript"],
     webUrl: "/projects/screenrec",
     stack: "Capture",
-    logoUrl: "https://unavatar.io/x/CodeByChai",
+    logoUrl: "/images/record-logo.svg",
     thumbnail: "/images/record-preview.svg",
   },
   {
@@ -53,7 +53,7 @@ export const projects: Project[] = [
     tech: ["Next.js", "OpenAI", "TypeScript"],
     webUrl: "/x-auto-poster",
     stack: "Social",
-    logoUrl: "https://unavatar.io/x/CodeByChai",
+    logoUrl: "/images/x-auto-poster-logo.svg",
     thumbnail: "/images/x-auto-poster-preview.svg",
   },
   {
