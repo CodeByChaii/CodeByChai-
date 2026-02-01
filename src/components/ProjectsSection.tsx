@@ -40,11 +40,18 @@ const item = {
   show: { opacity: 1, y: 0 },
 };
 
+function getBriefDescription(description: string, maxLength = 120) {
+  if (description.length <= maxLength) return description;
+  const trimmed = description.slice(0, maxLength).trimEnd();
+  return `${trimmed}…`;
+}
+
 function ProjectCard({ p, fingerprint }: { p: Project; fingerprint: string }) {
   const hasLinks = projectHasLinks(p);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [ratings, setRatings] = useState({ up: 0, down: 0 });
   const [isRating, setIsRating] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const logo = useMemo(() => p.logoUrl || p.thumbnail || null, [p.logoUrl, p.thumbnail]);
 
   useEffect(() => {
@@ -100,68 +107,6 @@ function ProjectCard({ p, fingerprint }: { p: Project; fingerprint: string }) {
 
   const resetTilt = () => setTilt({ x: 0, y: 0 });
 
-  // Special handling for suggestion card
-  if (p.id === "suggest-project") {
-    return (
-      <motion.article
-        variants={item}
-        className="rounded-2xl overflow-hidden transition shadow-lg border h-full"
-        style={{
-          backgroundColor: "var(--card)",
-          borderColor: "var(--accent)",
-          borderWidth: 2,
-          boxShadow: "var(--shadow)",
-          transform: `perspective(1100px) rotateX(${tilt.y}deg) rotateY(${tilt.x}deg)`,
-        }}
-        whileHover={{ y: -6, transition: { duration: 0.2 } }}
-        onMouseMove={onMove}
-        onMouseLeave={resetTilt}
-      >
-        <div className="p-6 flex flex-col gap-4 h-full">
-          <div className="flex items-center gap-3">
-            <div
-              className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border"
-              style={{ borderColor: "var(--accent)", backgroundColor: "var(--accent-soft)", color: "var(--accent)" }}
-            >
-              <span className="text-2xl">💡</span>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-semibold" style={{ color: "var(--foreground)" }}>
-                {p.name}
-              </h3>
-              {p.stack && (
-                <span
-                  className="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold"
-                  style={{ backgroundColor: "var(--surface)", color: "var(--muted)", border: `1px solid var(--border)` }}
-                >
-                  {p.stack}
-                </span>
-              )}
-            </div>
-          </div>
-
-          <p style={{ color: "var(--muted)" }}>{p.description}</p>
-
-          <div className="flex flex-wrap gap-2">
-            {p.tech.map((t) => (
-              <span
-                key={t}
-                className="rounded-full px-3 py-1 text-xs font-semibold"
-                style={{ backgroundColor: "var(--accent-soft)", color: "var(--accent)" }}
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-
-          <div className="mt-auto">
-            <SuggestionForm />
-          </div>
-        </div>
-      </motion.article>
-    );
-  }
-
   return (
     <motion.article
       variants={item}
@@ -177,10 +122,10 @@ function ProjectCard({ p, fingerprint }: { p: Project; fingerprint: string }) {
       onMouseMove={onMove}
       onMouseLeave={resetTilt}
     >
-      <div className="p-6 flex flex-col gap-4 h-full">
-        <div className="flex items-center gap-3">
+      <div className="p-5 flex flex-col gap-4 h-full">
+        <div className="flex items-start gap-3">
           <div
-            className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border"
+            className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border"
             style={{ borderColor: "var(--border)", backgroundColor: "var(--surface)", color: "var(--accent)" }}
           >
             {logo ? (
@@ -190,7 +135,7 @@ function ProjectCard({ p, fingerprint }: { p: Project; fingerprint: string }) {
             )}
           </div>
           <div className="flex-1">
-            <h3 className="text-lg font-semibold" style={{ color: "var(--foreground)" }}>
+            <h3 className="text-base font-semibold" style={{ color: "var(--foreground)" }}>
               {p.name}
             </h3>
             {p.stack && (
@@ -202,11 +147,25 @@ function ProjectCard({ p, fingerprint }: { p: Project; fingerprint: string }) {
               </span>
             )}
           </div>
+          <button
+            type="button"
+            onClick={() => setIsExpanded((v) => !v)}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border text-sm transition"
+            style={{ borderColor: "var(--border)", color: "var(--muted)", backgroundColor: "var(--surface)" }}
+            aria-label={isExpanded ? "Collapse details" : "Expand details"}
+            title={isExpanded ? "Collapse" : "Expand"}
+          >
+            {isExpanded ? "–" : "+"}
+          </button>
         </div>
 
-        {p.description && <p style={{ color: "var(--muted)" }}>{p.description}</p>}
+        {p.description && (
+          <p style={{ color: "var(--muted)" }}>
+            {isExpanded ? p.description : getBriefDescription(p.description)}
+          </p>
+        )}
 
-        {p.highlights && p.highlights.length > 0 && (
+        {isExpanded && p.highlights && p.highlights.length > 0 && (
           <ul className="space-y-2 text-sm" style={{ color: "var(--foreground)" }}>
             {p.highlights.map((h) => (
               <li key={h} className="flex items-start gap-2">
@@ -219,14 +178,14 @@ function ProjectCard({ p, fingerprint }: { p: Project; fingerprint: string }) {
           </ul>
         )}
 
-        {p.buildNote && (
+        {isExpanded && p.buildNote && (
           <p className="text-sm" style={{ color: "var(--muted)" }}>
             {p.buildNote}
           </p>
         )}
 
         <div className="flex flex-wrap gap-2">
-          {p.tech.map((t) => (
+          {(isExpanded ? p.tech : p.tech.slice(0, 3)).map((t) => (
             <span
               key={t}
               className="rounded-full px-3 py-1 text-xs font-semibold"
@@ -235,6 +194,14 @@ function ProjectCard({ p, fingerprint }: { p: Project; fingerprint: string }) {
               {t}
             </span>
           ))}
+          {!isExpanded && p.tech.length > 3 && (
+            <span
+              className="rounded-full px-3 py-1 text-xs font-semibold"
+              style={{ backgroundColor: "var(--surface)", color: "var(--muted)", border: `1px solid var(--border)` }}
+            >
+              +{p.tech.length - 3}
+            </span>
+          )}
         </div>
 
         <div className="mt-auto space-y-3">
@@ -343,6 +310,8 @@ type Props = { projects: Project[] };
 
 export function ProjectsSection({ projects }: Props) {
   const list = projects ?? staticProjects;
+  const mainProjects = list.filter((p) => p.id !== "suggest-project");
+  const suggestProject = list.find((p) => p.id === "suggest-project");
   const [fingerprint, setFingerprint] = useState("");
 
   useEffect(() => {
@@ -376,10 +345,35 @@ export function ProjectsSection({ projects }: Props) {
           whileInView="show"
           viewport={{ once: true, margin: "-40px" }}
         >
-          {list.map((p) => (
+          {mainProjects.map((p) => (
             <ProjectCard key={p.id} p={p} fingerprint={fingerprint} />
           ))}
         </motion.div>
+
+        <div className="mt-12">
+          <div
+            className="rounded-2xl border p-6 shadow-lg"
+            style={{
+              borderColor: "var(--border)",
+              backgroundColor: "var(--card)",
+              boxShadow: "var(--shadow)",
+            }}
+          >
+            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              <div className="space-y-2">
+                <h3 className="text-xl font-semibold" style={{ color: "var(--foreground)" }}>
+                  {suggestProject?.name ?? "Request a Project"}
+                </h3>
+                <p className="text-sm" style={{ color: "var(--muted)" }}>
+                  {suggestProject?.description ?? "Tell me what you want built next and drop your email for updates."}
+                </p>
+              </div>
+              <div className="md:w-[360px]">
+                <SuggestionForm />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </motion.section>
   );
