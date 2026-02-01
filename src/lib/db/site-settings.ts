@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
 export type SiteSettingsMap = {
   hero?: { title: string; subtitle: string };
@@ -37,7 +37,7 @@ const defaults: SiteSettingsMap = {
 };
 
 export async function getSiteSettings(): Promise<SiteSettingsMap> {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return defaults;
+  if (!isSupabaseConfigured()) return defaults;
   const supabase = await createClient();
   const { data, error } = await supabase.from("site_settings").select("key, value");
   if (error || !data?.length) return defaults;
@@ -53,7 +53,7 @@ export async function updateSiteSetting(
   key: string,
   value: Record<string, unknown>
 ): Promise<{ error: Error | null }> {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return { error: new Error("Supabase not configured") };
+  if (!isSupabaseConfigured()) return { error: new Error("Supabase not configured") };
   const supabase = await createClient();
   const { error } = await supabase
     .from("site_settings")

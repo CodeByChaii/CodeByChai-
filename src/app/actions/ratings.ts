@@ -1,8 +1,9 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
 export async function getRatings(projectId: string) {
+  if (!isSupabaseConfigured()) return { up: 0, down: 0 };
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -22,6 +23,7 @@ export async function getRatings(projectId: string) {
 }
 
 export async function getUserRating(projectId: string, fingerprint: string) {
+  if (!isSupabaseConfigured()) return null;
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -39,6 +41,7 @@ export async function getUserRating(projectId: string, fingerprint: string) {
 }
 
 export async function submitRating(projectId: string, rating: "up" | "down", fingerprint: string) {
+  if (!isSupabaseConfigured()) return { error: "Supabase not configured" };
   const supabase = await createClient();
 
   // Insert a new rating each time (allow multiple votes)
@@ -59,6 +62,7 @@ export async function submitRating(projectId: string, rating: "up" | "down", fin
 }
 
 export async function removeRating(projectId: string, fingerprint: string) {
+  if (!isSupabaseConfigured()) return { error: "Supabase not configured" };
   const supabase = await createClient();
 
   const { error } = await supabase

@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import type { Project } from "@/data/types";
 
 type ProjectRow = {
@@ -31,7 +31,7 @@ function rowToProject(r: ProjectRow): Project {
 }
 
 export async function getProjectsFromDb(): Promise<Project[] | null> {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return null;
+  if (!isSupabaseConfigured()) return null;
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("projects")
@@ -42,7 +42,7 @@ export async function getProjectsFromDb(): Promise<Project[] | null> {
 }
 
 export async function getProjectById(id: string): Promise<Project | null> {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return null;
+  if (!isSupabaseConfigured()) return null;
   const supabase = await createClient();
   const { data, error } = await supabase.from("projects").select("*").eq("id", id).single();
   if (error || !data) return null;
@@ -59,7 +59,7 @@ export async function createProject(project: {
   thumbnail_url?: string | null;
   stack?: string | null;
 }): Promise<{ id: string | null; error: Error | null }> {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return { id: null, error: new Error("Supabase not configured") };
+  if (!isSupabaseConfigured()) return { id: null, error: new Error("Supabase not configured") };
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("projects")
@@ -87,7 +87,7 @@ export async function updateProject(
     sort_order: number;
   }>
 ): Promise<{ error: Error | null }> {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return { error: new Error("Supabase not configured") };
+  if (!isSupabaseConfigured()) return { error: new Error("Supabase not configured") };
   const supabase = await createClient();
   const { error } = await supabase
     .from("projects")
@@ -97,7 +97,7 @@ export async function updateProject(
 }
 
 export async function deleteProject(id: string): Promise<{ error: Error | null }> {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return { error: new Error("Supabase not configured") };
+  if (!isSupabaseConfigured()) return { error: new Error("Supabase not configured") };
   const supabase = await createClient();
   const { error } = await supabase.from("projects").delete().eq("id", id);
   return { error: error ? new Error(error.message) : null };

@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
 export async function submitSuggestion(formData: FormData) {
   const name = formData.get("name") as string | null;
@@ -9,6 +9,10 @@ export async function submitSuggestion(formData: FormData) {
 
   if (!suggestion || suggestion.trim().length < 10) {
     return { error: "Please provide a meaningful suggestion (at least 10 characters)" };
+  }
+
+  if (!isSupabaseConfigured()) {
+    return { error: "Suggestions are not available yet." };
   }
 
   const supabase = await createClient();
@@ -28,6 +32,7 @@ export async function submitSuggestion(formData: FormData) {
 }
 
 export async function getPendingSuggestions() {
+  if (!isSupabaseConfigured()) return [];
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -45,6 +50,7 @@ export async function getPendingSuggestions() {
 }
 
 export async function markSuggestionsEmailed(ids: string[]) {
+  if (!isSupabaseConfigured()) return;
   const supabase = await createClient();
 
   const { error } = await supabase
