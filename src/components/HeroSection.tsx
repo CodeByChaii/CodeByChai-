@@ -12,63 +12,73 @@ type Props = {
 
 const stagger = 0.12;
 
-// Humorous code that types out character by character
+// Simple HTML/CSS/JS demo typing loop
 const CODE_LINES = [
-  { text: "function fixBug() {", color: "#c678dd", delay: 0 },
-  { text: "  // TODO: Actually fix the bug", color: "#5c6370", delay: 0.5 },
-  { text: "  console.log('It works on my machine 🤷');", color: "#98c379", delay: 1.2 },
-  { text: "  return true; // Ship it!", color: "#c678dd", delay: 2.0 },
-  { text: "}", color: "#c678dd", delay: 2.6 },
-  { text: "", color: "#abb2bf", delay: 3.0 },
-  { text: "// Production ready ✨", color: "#5c6370", delay: 3.3 },
+  { text: "<!DOCTYPE html>", color: "#c678dd" },
+  { text: "<html>", color: "#c678dd" },
+  { text: "  <head>", color: "#c678dd" },
+  { text: "    <style>", color: "#c678dd" },
+  { text: "      body { font-family: Arial; }", color: "#98c379" },
+  { text: "    </style>", color: "#c678dd" },
+  { text: "  </head>", color: "#c678dd" },
+  { text: "  <body>", color: "#c678dd" },
+  { text: "    <h1>Hello, World!</h1>", color: "#e5c07b" },
+  { text: "    <script>", color: "#c678dd" },
+  { text: "      console.log('Hello, World!');", color: "#61afef" },
+  { text: "    </script>", color: "#c678dd" },
+  { text: "  </body>", color: "#c678dd" },
+  { text: "</html>", color: "#c678dd" },
 ];
-
-function TypingCodeLine({ text, color, delay, startTyping }: { text: string; color: string; delay: number; startTyping: boolean }) {
-  const [displayedText, setDisplayedText] = useState("");
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    if (!startTyping) return;
-
-    const timer = setTimeout(() => {
-      if (currentIndex < text.length) {
-        setDisplayedText(text.substring(0, currentIndex + 1));
-        setCurrentIndex(currentIndex + 1);
-      }
-    }, delay * 1000 + currentIndex * 50); // 50ms per character
-
-    return () => clearTimeout(timer);
-  }, [currentIndex, text, delay, startTyping]);
-
-  const showCursor = currentIndex < text.length;
-
-  return (
-    <div className="font-mono text-sm leading-relaxed">
-      <span style={{ color }}>{displayedText}</span>
-      {showCursor && (
-        <motion.span
-          animate={{ opacity: [1, 0, 1] }}
-          transition={{ duration: 0.8, repeat: Infinity }}
-          style={{ color: "var(--accent)" }}
-        >
-          ▮
-        </motion.span>
-      )}
-    </div>
-  );
-}
 
 export function HeroSection({ hero: heroProp, site: siteProp }: Props = {}) {
   const hero = heroProp ?? HERO;
   const site = siteProp ?? SITE;
   const prefersReducedMotion = useReducedMotion();
   const [startTyping, setStartTyping] = useState(false);
+  const [lineIndex, setLineIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+  const [displayedLines, setDisplayedLines] = useState<string[]>(Array(CODE_LINES.length).fill(""));
 
   useEffect(() => {
     // Start typing animation after component mounts
     const timer = setTimeout(() => setStartTyping(true), 1000);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!startTyping) return;
+
+    const currentLine = CODE_LINES[lineIndex];
+    const isLineComplete = charIndex >= currentLine.text.length;
+
+    const delay = isLineComplete ? 650 : 45;
+    const timer = setTimeout(() => {
+      if (!isLineComplete) {
+        setDisplayedLines((prev) => {
+          const next = [...prev];
+          next[lineIndex] = currentLine.text.slice(0, charIndex + 1);
+          return next;
+        });
+        setCharIndex((c) => c + 1);
+        return;
+      }
+
+      if (lineIndex < CODE_LINES.length - 1) {
+        setLineIndex((i) => i + 1);
+        setCharIndex(0);
+        return;
+      }
+
+      // Loop after a short pause
+      setTimeout(() => {
+        setDisplayedLines(Array(CODE_LINES.length).fill(""));
+        setLineIndex(0);
+        setCharIndex(0);
+      }, 900);
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [startTyping, lineIndex, charIndex]);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -131,32 +141,57 @@ export function HeroSection({ hero: heroProp, site: siteProp }: Props = {}) {
             borderColor: "var(--border)",
             backgroundColor: "var(--card)",
             boxShadow: "var(--shadow)",
+            transform: `perspective(900px) rotateX(${tiltX.get()}deg) rotateY(${tiltY.get()}deg)`,
           }}
+          onMouseMove={handleMove}
+          onMouseLeave={handleLeave}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: stagger * 2 }}
         >
-          {/* VS Code-style header */}
-          <div className="flex items-center gap-2 border-b px-4 py-2" style={{ borderColor: "var(--border)", backgroundColor: "var(--surface)" }}>
-            <div className="flex gap-1.5">
-              <div className="h-3 w-3 rounded-full" style={{ backgroundColor: "#ff5f56" }} />
-              <div className="h-3 w-3 rounded-full" style={{ backgroundColor: "#ffbd2e" }} />
-              <div className="h-3 w-3 rounded-full" style={{ backgroundColor: "#27c93f" }} />
+          <div
+            className="absolute inset-0 opacity-70"
+            style={{
+              background: `radial-gradient(circle at 30% 20%, rgba(125, 211, 252, 0.18), transparent 45%),
+                radial-gradient(circle at 80% 20%, rgba(255, 123, 215, 0.18), transparent 45%),
+                radial-gradient(circle at 50% 80%, rgba(167, 139, 250, 0.18), transparent 45%)`,
+              transform: `translate3d(${orbX.get()}px, ${orbY.get()}px, 0)`,
+            }}
+          />
+
+          <div className="relative">
+            <div
+              className="flex items-center gap-2 border-b px-4 py-2"
+              style={{ borderColor: "var(--border)", backgroundColor: "var(--surface)" }}
+            >
+              <div className="flex gap-1.5">
+                <div className="h-3 w-3 rounded-full" style={{ backgroundColor: "#ff5f56" }} />
+                <div className="h-3 w-3 rounded-full" style={{ backgroundColor: "#ffbd2e" }} />
+                <div className="h-3 w-3 rounded-full" style={{ backgroundColor: "#27c93f" }} />
+              </div>
+              <span className="ml-2 text-sm font-mono" style={{ color: "var(--muted)" }}>index.html</span>
             </div>
-            <span className="ml-2 text-sm font-mono" style={{ color: "var(--muted)" }}>production.ts</span>
-          </div>
-          
-          {/* Code editor content with typing animation */}
-          <div className="p-4 min-h-[200px]">
-            {CODE_LINES.map((line, index) => (
-              <TypingCodeLine
-                key={index}
-                text={line.text}
-                color={line.color}
-                delay={line.delay}
-                startTyping={startTyping}
-              />
-            ))}
+
+            <div className="p-4 min-h-[220px]">
+              {CODE_LINES.map((line, i) => {
+                const isActiveLine = startTyping && i === lineIndex;
+                const isLineComplete = displayedLines[i].length >= line.text.length;
+                return (
+                  <div key={`${line.text}-${i}`} className="font-mono text-sm leading-relaxed">
+                    <span style={{ color: line.color }}>{displayedLines[i]}</span>
+                    {isActiveLine && !isLineComplete && (
+                      <motion.span
+                        animate={{ opacity: [1, 0, 1] }}
+                        transition={{ duration: 0.8, repeat: Infinity }}
+                        style={{ color: "var(--accent)" }}
+                      >
+                        ▮
+                      </motion.span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </motion.div>
       </div>
