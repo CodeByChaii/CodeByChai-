@@ -19,6 +19,10 @@ export function AnimatedBackground() {
   // Color transformations based on scroll
   const hue = useTransform(scrollYProgress, [0, 0.5, 1], [280, 240, 320]);
   const saturation = useTransform(scrollYProgress, [0, 0.5, 1], [70, 80, 60]);
+  const overlayGradient = useTransform(
+    [hue, saturation],
+    ([h, s]) => `radial-gradient(circle at 30% 50%, hsla(${h}, ${s}%, 50%, 0.15), transparent 60%)`
+  );
 
   if (!isMounted) {
     return (
@@ -82,10 +86,7 @@ export function AnimatedBackground() {
       <motion.div
         className="absolute inset-0"
         style={{
-          background: useTransform(
-            [hue, saturation],
-            ([h, s]) => `radial-gradient(circle at 30% 50%, hsla(${h}, ${s}%, 50%, 0.15), transparent 60%)`
-          ),
+          background: overlayGradient,
         }}
       />
 
