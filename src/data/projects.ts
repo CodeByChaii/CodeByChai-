@@ -5,6 +5,23 @@ export { projectHasLinks } from "./types";
 
 export const projects: Project[] = [
   {
+    id: "code-by-fang",
+    name: "Code By Fang",
+    description:
+      "AI-powered code editor with local multi-agent AI. Features 6 AI modes (Agent, Ask, Plan, Photo, Video, WebSearch), Monaco editor, vision-to-code, and multimedia generation - all running 100% locally with no cloud dependencies.",
+    highlights: [
+      "Multi-agent AI system with Solo and Team modes",
+      "6 AI modes: coding, planning, image, video, web search",
+      "100% local - no cloud, no API costs, full privacy",
+      "Supports 3D generation, TTS, music, and avatars",
+      "100% test coverage - production ready",
+    ],
+    buildNote:
+      "Built as a free, open-source alternative to Cursor and VS Code with comprehensive local AI capabilities.",
+    tech: ["Electron", "React", "TypeScript", "Monaco Editor", "Python", "Ollama", "Webpack", "Zustand"],
+    stack: "Desktop",
+  },
+  {
     id: "screenrec-live",
     name: "Record",
     description:
